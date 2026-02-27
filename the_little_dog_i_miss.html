@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Puzzle Art</title>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
 <style>
 
 /* --- 1. GLOBAL SETTINGS (Wall & Layout) --- */
@@ -429,6 +430,21 @@ h3 {
     /* Removes underline */
 }
 
+/* Hide images by default */
+.piece img {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+/* Only show images when the 'unlocked' class is added */
+.piece.unlocked img {
+    opacity: 1;
+}
+
+/* Keep the '?' visible even when image is hidden */
+.piece.unlocked .label-id {
+    display: none;
+}
 </style>
 
 
@@ -444,31 +460,29 @@ h3 {
         <button id="viewartBtn">View the Art</button>
     </div>
 
-<a href="#" id="homeLink">
-    <button id="homeBtn">Home</button>
-</a>
+    <a href="index.html" id="homeLink">
+        <button id="homeBtn">Home</button>
+    </a>
 
-
-        <div class="frame-wrapper">
-            <div class="puzzle-grid" id="main-puzzle">
-                <div class="piece unlocked"><img src="section1.png"></div>
-                <div class="piece"><img src="section2.png"><div class="label-id">?</div></div>
-                <div class="piece"><img src="section3.png"><div class="label-id">?</div></div>
-                <div class="piece"><img src="section4.png"><div class="label-id">?</div></div>
-                <div class="piece"><img src="section5.png"><div class="label-id">?</div></div>
-                <div class="piece"><img src="section6.png"><div class="label-id">?</div></div>
-                <div class="piece"><img src="section7.png"><div class="label-id">?</div></div>
-                <div class="piece"><img src="section8.png"><div class="label-id">?</div></div>
-                <div class="piece"><img src="section9.png"><div class="label-id">?</div></div>
-            </div>
+    <div class="frame-wrapper">
+        <div class="puzzle-grid" id="main-puzzle">
+            <div id="piece-1" class="piece"><img src="section1.PNG"><div class="label-id">?</div></div>
+            <div id="piece-2" class="piece"><img src="section2.PNG"><div class="label-id">?</div></div>
+            <div id="piece-3" class="piece"><img src="section3.PNG"><div class="label-id">?</div></div>
+            <div id="piece-4" class="piece"><img src="section4.PNG"><div class="label-id">?</div></div>
+            <div id="piece-5" class="piece"><img src="section5.PNG"><div class="label-id">?</div></div>
+            <div id="piece-6" class="piece"><img src="section6.PNG"><div class="label-id">?</div></div>
+            <div id="piece-7" class="piece"><img src="section7.PNG"><div class="label-id">?</div></div>
+            <div id="piece-8" class="piece"><img src="section8.PNG"><div class="label-id">?</div></div>
+            <div id="piece-9" class="piece"><img src="section9.PNG"><div class="label-id">?</div></div>
         </div>
+    </div>
    
-   <div class="container">
+    <div class="container">
         <h1>The Little Dog I Miss</h1>
-        <h2>#2</h2>
-<h3><p>Digital Media</p></h3>
- </div>
-
+        <h2 id="status-display">Digital Media</h2>
+        <h3><p>A collaborative art hunt!</p></h3>
+    </div>
     <script>
         document.getElementById('viewartBtn').addEventListener('click', function() {
             document.getElementById('introOverlay').classList.add('hidden');
