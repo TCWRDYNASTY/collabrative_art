@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Art</title>
+
+<style>
+
+/* --- 1. GLOBAL SETTINGS (Wall & Layout) --- */
+
+/* :root stores reusable global variables */
+:root {
+
+    --frame-thickness: clamp(20px, 5vw, 60px); 
+    /* Creates a responsive thickness value (min 20px, max 60px, scales with screen width) */
+
+    --wall-color: #F2F1EC;
+    /* Light off-white wall background color */
+
+    --gold: #d4af37;
+    /* Gold accent color used for plaque borders/text */
+
+    --slate-black: #1a1a1a;
+    /* Dark black used for plaque background */
+}
+
+body {
+
+    background-color: var(--wall-color);
+    /* Sets entire page background using wall color variable */
+
+    display: flex;
+    /* Makes the body a flex container */
+
+    flex-direction: column;
+    /* Stacks children vertically */
+
+    align-items: center;
+    /* Centers content horizontally */
+
+    justify-content: flex-start; 
+    /* Aligns content toward the top vertically */
+
+    padding: 30px 20px;
+    /* Adds spacing around the inside of the page */
+
+    min-height: 100vh;
+    /* Ensures page fills at least full screen height */
+
+    margin: 0;
+    /* Removes default browser spacing */
+
+    box-sizing: border-box;
+    /* Ensures padding/border are included in width calculations */
+}
+
+
+/* --- 2. THE 3D FRAME (The Main Art) --- */
+
+.frame-wrapper {
+
+    position: relative;
+    /* Allows absolutely positioned elements inside it */
+
+    width: 100%;
+    /* Makes frame responsive */
+
+    max-width: 800px;
+    /* Prevents it from getting too large */
+
+    box-sizing: border-box;
+    /* Keeps sizing predictable */
+
+    background-color: #fff;
+    /* White canvas background */
+
+    padding: 2px;
+    /* Small visible edge around puzzle grid */
+
+    border: 6px solid white;
+    /* Creates the illusion of frame thickness */
+
+    box-shadow: 12px 12px 25px rgba(0,0,0,0.3);
+    /* Adds drop shadow for 3D effect */
+
+    border-radius: 2px; 
+    /* Slight rounding of corners */
+
+    transition: transform 0.3s ease;
+    /* Smooth animation when hovered */
+}
+
+.frame-wrapper:hover {
+
+    transform: translate(-4px, -4px);
+    /* Moves frame slightly up & left for lift effect */
+
+    box-shadow: 20px 20px 40px rgba(0,0,0,0.4);
+    /* Deepens shadow on hover */
+}
+
+
+/* --- 3. THE PUZZLE GRID (Inside the Frame) --- */
+
+.puzzle-grid {
+
+    display: grid;
+    /* Uses CSS Grid layout */
+
+    grid-template-columns: repeat(3, 1fr);
+    /* Creates 3 equal columns */
+
+    grid-template-rows: repeat(3, 1fr);
+    /* Creates 3 equal rows */
+
+    width: 100%; 
+    /* Fills frame width */
+
+    aspect-ratio: 3600 / 3000;
+    /* Maintains consistent image proportion */
+
+    gap: 2px;
+    /* Space between puzzle pieces */
+
+    background-color: #111;
+    /* Dark background between pieces */
+
+    box-shadow: inset 0 10px 20px rgba(0,0,0,0.8);
+    /* Inner shadow for depth */
+
+    overflow: hidden;
+    /* Prevents content from spilling outside grid */
+}
+
+.piece {
+    background-color: #222;
+    /* Fallback dark background */
+
+    overflow: hidden;
+    /* Crops any image overflow */
+
+    position: relative;
+    /* Allows label positioning inside */
+}
+
+.piece img {
+
+    width: 100%;
+    /* Image fills piece horizontally */
+
+    height: 100%;
+    /* Image fills piece vertically */
+
+    object-fit: cover;
+    /* Crops image nicely without distortion */
+
+    display: block;
+    /* Removes small inline spacing */
+}
+
+.label-id {
+
+    position: absolute;
+    /* Positions inside puzzle piece */
+
+    top: 50%; left: 50%;
+    /* Moves to center point */
+
+    transform: translate(-50%, -50%);
+    /* Perfect centering trick */
+
+    color: white;
+    /* Text color */
+
+    opacity: 0.3;
+    /* Makes label subtle/transparent */
+}
+
+
+/* --- 4. THE MUSEUM PLAQUE (The Description) --- */
+
+.container {
+
+    width: 90%;
+    /* Responsive width */
+
+    max-width: 320px;
+    /* Prevents plaque from getting too wide */
+
+    background-color: var(--slate-black); 
+    /* Dark plaque background */
+
+    border-radius: 2px;
+    /* Slight rounding */
+
+    padding: 1.5rem;
+    /* Internal spacing */
+
+    margin-top: 20px; 
+    /* Space between frame and plaque */
+
+    display: flex;
+    /* Enables flex layout */
+
+    flex-direction: column;
+    /* Stack text vertically */
+
+    align-items: center; 
+    /* Center horizontally */
+
+    text-align: center;
+    /* Center text alignment */
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    /* Shadow under plaque */
+
+    border: 1px solid var(--gold);
+    /* Thin gold border */
+
+    border-top: 4px solid var(--gold);
+    /* Thicker gold accent top line */
+
+    box-sizing: border-box;
+    /* Consistent sizing */
+}
+
+
+/* --- 5. TYPOGRAPHY (Plaque Text) --- */
+
+h1 { 
+
+    color: #fdfdfb;
+    /* Off-white heading color */
+
+    font-size: 1.5rem;
+    /* Large title text */
+
+    margin: 0 0 5px 0;
+    /* Bottom spacing only */
+
+    font-family: 'Times New Roman', serif;
+    /* Classic museum-style font */
+}
+
+h2 {
+
+    color: var(--gold);
+    /* Gold subtitle */
+
+    font-size: 0.9rem;
+    /* Smaller size */
+
+    font-family: "Garamond", serif;
+    /* Elegant serif font */
+
+    font-style: italic;
+    /* Italicized */
+
+    margin: 0;
+    /* Removes spacing */
+}
+
+h3 {
+
+    color: #eae6da;
+    /* White text */
+
+    font-size: 1.0rem;
+    /* Medium size */
+
+    font-family: 'Times New Roman', serif;
+
+    margin: 0;
+}
+
+
+/* --- 6. INTRO OVERLAY (Welcome Screen) --- */
+
+#introOverlay {
+
+    position: fixed;
+    /* Stays fixed over entire screen */
+
+    inset: 0;
+    /* Shortcut for top/right/bottom/left = 0 */
+
+    background: rgba(0, 0, 0, 0.95);
+    /* Nearly black background */
+
+    z-index: 10001;
+    /* Ensures it sits on top of everything */
+
+    display: flex;
+    /* Centers content */
+
+    flex-direction: column;
+    /* Vertical stacking */
+
+    justify-content: center;
+    /* Center vertically */
+
+    align-items: center;
+    /* Center horizontally */
+
+    text-align: center;
+    /* Center text */
+
+    padding: 40px;
+    /* Inner spacing */
+
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    /* Smooth fade animation */
+}
+
+#introOverlay p {
+
+    color: white;
+    /* White text */
+
+    font-family: sans-serif;
+    /* Clean font */
+
+    max-width: 500px;
+    /* Limits line width */
+
+    line-height: 1.6;
+    /* Improves readability */
+
+    font-size: 1.2rem;
+    /* Larger paragraph text */
+
+    margin-bottom: 2rem;
+    /* Space below paragraph */
+}
+
+#viewartBtn {
+
+    padding: 15px 30px;
+    /* Button size */
+
+    background-color: var(--slate-black);
+    /* Dark button */
+
+    color: white;
+    /* White text */
+
+    border: 1px solid black;
+    /* ⚠️ Not valid — should be something like: 1px solid black */
+
+    border-radius: 50px;
+    /* Pill shape */
+
+    font-weight: bold;
+    /* Bold text */
+
+    cursor: pointer;
+    /* Pointer on hover */
+
+    font-size: 1rem;
+    /* Medium size */
+
+    transition: transform 0.2s;
+    /* Smooth hover animation */
+}
+
+#viewartBtn:hover {
+    transform: scale(1.05);
+    /* Slight zoom on hover */
+}
+
+.hidden {
+
+    opacity: 0;
+    /* Makes invisible */
+
+    visibility: hidden;
+    /* Removes from visibility flow */
+
+    pointer-events: none;
+    /* Disables clicking */
+}
+
+
+/* HOME BUTTON */
+
+#homeBtn {
+
+    align-self: flex-end; 
+    /* Pushes button to right side */
+
+    margin: 10px 20px 30px 0;
+    /* Spacing around button */
+
+    padding: 12px 25px;
+    /* Button size */
+
+    background: white;
+    /* White background */
+
+    color: black;
+    /* Black text */
+
+    border: 3px solid black;    
+    /* Thick black border */
+
+    border-radius: 12px;
+    /* Rounded corners */
+
+    font-weight: bold;
+    /* Bold text */
+
+    cursor: pointer;
+    /* Pointer cursor */
+
+    font-size: 1rem;
+    /* Text size */
+
+    transition: transform 0.2s;
+    /* Smooth hover effect */
+}
+
+#homeLink {
+
+    align-self: flex-end;
+    /* Keeps alignment consistent */
+
+    text-decoration: none;
+    /* Removes underline */
+}
+
+</style>
+
+
+
+</head>
+<body>
+
+    <div id="introOverlay">
+        <p>
+            The art here is a collaborative puzzle. <br><br>
+            Find the hidden pieces around the city to reveal the story of "The Little Dog I Miss."
+        </p>
+        <button id="viewartBtn">View the Art</button>
+    </div>
+
+<a href="#" id="homeLink">
+    <button id="homeBtn">Home</button>
+</a>
+
+
+        <div class="frame-wrapper">
+            <div class="puzzle-grid" id="main-puzzle">
+                <div class="piece unlocked"><img src="section1.PNG"></div>
+                <div class="piece"><img src="section2.PNG"><div class="label-id">?</div></div>
+                <div class="piece"><img src="section3.PNG"><div class="label-id">?</div></div>
+                <div class="piece"><img src="section4.PNG"><div class="label-id">?</div></div>
+                <div class="piece"><img src="section5.PNG"><div class="label-id">?</div></div>
+                <div class="piece"><img src="section6.PNG"><div class="label-id">?</div></div>
+                <div class="piece"><img src="section7.PNG"><div class="label-id">?</div></div>
+                <div class="piece"><img src="section8.PNG"><div class="label-id">?</div></div>
+                <div class="piece"><img src="section9.PNG"><div class="label-id">?</div></div>
+            </div>
+        </div>
+   
+   <div class="container">
+        <h1>The Little Dog I Miss</h1>
+        <h2>#2</h2>
+<h3><p>Digital Media<br/>
+Total time 24 hours</p></h3>
+ </div>
+
+    <script>
+        document.getElementById('viewartBtn').addEventListener('click', function() {
+            document.getElementById('introOverlay').classList.add('hidden');
+        });
+    </script>
+
+<script>
+// 1. Setup & Configuration
+const REVEAL_DATE = new Date(2026, 11, 31, 23, 59); // Dec 31, 2026
+const supabaseUrl = 'https://yiindtbdnfqgwktaiaaq.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpaW5kdGJkbmZxZ3drdGFpYWFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjMyNTksImV4cCI6MjA4NzU5OTI1OX0.3TYbAKOfH3KLmb9N-axqUnnb8c-WAlKmRdmEd5KgNgI';
+
+// Use a unique name for the client to avoid errors
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+// Check URL for piece ID (e.g., mysite.com/?piece=2)
+const urlParams = new URLSearchParams(window.location.search);
+const scannedPieceId = urlParams.get('piece');
+
+// 2. Core Logic Functions
+async function init() {
+    // Check if the deadline has passed first
+    await checkRevealStatus();
+
+    // If a QR code was scanned, process it
+    if (scannedPieceId) {
+        handleScannedPiece(scannedPieceId);
+    }
+}
+
+async function checkRevealStatus() {
+    const now = new Date();
+    
+    if (now > REVEAL_DATE) {
+        // Unlock everything if past deadline
+        document.querySelectorAll('.piece').forEach(p => p.classList.add('unlocked'));
+        document.querySelector('h2').innerText = "The hunt has concluded. The full artwork is now revealed.";
+    } else {
+        // Otherwise, fetch what has been found so far
+        fetchAllPieces(); 
+    }
+}
+
+async function fetchAllPieces() {
+    // Fixed: Using .eq() instead of .where()
+    const { data: pieces, error } = await supabaseClient
+        .from('puzzle_pieces')
+        .select('*')
+        .eq('is_found', true);
+
+    if (pieces) {
+        pieces.forEach(piece => {
+            unlockPiece(piece.id, false, piece);
+        });
+    }
+}
+
+async function handleScannedPiece(id) {
+    let { data: piece, error } = await supabaseClient
+        .from('puzzle_pieces')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (piece) {
+        if (!piece.is_found) {
+            // Found for the first time
+            unlockPiece(id, true, piece); 
+            updateSupabase(id);
+        } else {
+            // Already found by someone else
+            unlockPiece(id, false, piece);
+        }
+    }
+}
+
+async function updateSupabase(id) {
+    const { error } = await supabaseClient
+        .from('puzzle_pieces')
+        .update({ 
+            is_found: true, 
+            found_at: new Date().toISOString() 
+        })
+        .eq('id', id);
+
+    // Note: ntfy notification is now handled by your Supabase Edge Function Webhook!
+    if (error) console.error("Update failed:", error);
+}
+
+function unlockPiece(id, isFirst, pieceData) {
+    // Update the UI
+    const statusMsg = isFirst ? "Congrats! You found it first!" : "This piece was already discovered.";
+    document.querySelector('h2').innerText = statusMsg;
+    
+    if (pieceData.clue_coords) {
+        document.querySelector('h3').innerText = `Next Clue: ${pieceData.clue_coords}`;
+    }
+
+    // Logic to visually unlock the piece in your 3D/Canvas view
+    const pieceElement = document.getElementById(`piece-${id}`);
+    if (pieceElement) pieceElement.classList.add('unlocked');
+}
+
+// Start the app
+init();
+</script>
+
+
+</body>
+</html>
