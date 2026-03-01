@@ -490,78 +490,105 @@ h3 {
         });
     </script>
 
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
 <script>
 // --- CONFIGURATION ---
 const REVEAL_DATE = new Date(2026, 11, 31, 23, 59);
-const supabaseUrl = 'https://yiindtbdnfqgwktaiaaq.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpaW5kdGJkbmZxZ3drdGFpYWFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjMyNTksImV4cCI6MjA4NzU5OTI1OX0.3TYbAKOfH3KLmb9N-axqUnnb8c-WAlKmRdmEd5KgNgI';
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+// PASTE YOUR FIREBASE CONFIG BOX HERE:
+const firebaseConfig = {
+  apiKey: "AIzaSyBakPBYb0ngjOvHr89baflUet6S4d6E7Ec",
+  authDomain: "called0collaborative-art.firebaseapp.com",
+  projectId: "called0collaborative-art",
+  storageBucket: "called0collaborative-art.firebasestorage.app",
+  messagingSenderId: "63650107916",
+  appId: "1:63650107916:web:c0d369519d84d21d759429",
+  measurementId: "G-8GLRF54W15"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // --- INITIALIZATION ---
-document.getElementById('viewartBtn').addEventListener('click', () => {
+document.getElementById('viewartBtn')?.addEventListener('click', () => {
     document.getElementById('introOverlay').classList.add('hidden');
 });
 
 async function init() {
     const urlParams = new URLSearchParams(window.location.search);
-    const pieceId = urlParams.get('piece');
-    const project = urlParams.get('project') || 'penny'; // Default to penny if missing
+    const pieceNum = urlParams.get('piece'); // e.g., "1"
+    const project = urlParams.get('project') || 'penny'; // e.g., "penny"
 
-    await checkRevealStatus(project);
+    // 1. Check if the whole project is already revealed by date
+    if (new Date() > REVEAL_DATE) {
+        revealAll();
+    } else {
+        // 2. Load all currently found pieces for the 3x3 grid
+        await loadFoundPieces(project);
+    }
 
-    if (pieceId) {
-        handleScannedPiece(pieceId, project);
+    // 3. If this visit is from a new QR scan, handle the unlock
+    if (pieceNum) {
+        handleScannedPiece(pieceNum, project);
     }
 }
 
 // --- CORE LOGIC ---
-async function checkRevealStatus(project) {
-    if (new Date() > REVEAL_DATE) {
-        document.querySelectorAll('.piece').forEach(p => p.classList.add('unlocked'));
-        document.querySelector('h2').innerText = "The hunt has concluded. Art revealed.";
-    } else {
-        const { data: pieces } = await supabaseClient
-            .from('puzzle_pieces')
-            .select('*')
-            .eq('is_found', true)
-            .eq('project_id', project);
 
-        if (pieces) {
-            pieces.forEach(p => unlockPiece(p.id, false, p));
+async function loadFoundPieces(project) {
+    // Looks for all documents in 'puzzles' where project_id is 'penny' and is_found is true
+    const snapshot = await db.collection("puzzles")
+        .where("project_id", "==", project)
+        .where("is_found", "==", true)
+        .get();
+
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        // Extract the number from the ID (e.g., "penny-1" -> "1")
+        const idParts = doc.id.split('-');
+        const num = idParts[idParts.length - 1];
+        unlockPiece(num, false);
+    });
+}
+
+async function handleScannedPiece(num, project) {
+    const docId = `${project}-${num}`; // Combines to "penny-1"
+    const docRef = db.collection("puzzles").doc(docId);
+
+    try {
+        const doc = await docRef.get();
+        if (doc.exists) {
+            const data = doc.data();
+            if (!data.is_found) {
+                // UPDATE FIREBASE: Set to true and add server time
+                await docRef.update({
+                    is_found: true,
+                    found_at: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                unlockPiece(num, true);
+            } else {
+                unlockPiece(num, false);
+            }
         }
+    } catch (e) {
+        console.error("Firebase Error:", e);
     }
 }
 
-async function handleScannedPiece(id, project) {
-    let { data: piece } = await supabaseClient
-        .from('puzzle_pieces')
-        .select('*')
-        .eq('id', id)
-        .eq('project_id', project)
-        .single();
-
-    if (piece) {
-        if (!piece.is_found) {
-            unlockPiece(id, true, piece); 
-            updateSupabase(id, project);
-        } else {
-            unlockPiece(id, false, piece);
-        }
+function unlockPiece(num, isFirst) {
+    if (isFirst) {
+        document.querySelector('h2').innerText = "CalleDō: Piece Discovered!";
     }
-}
-
-async function updateSupabase(id, project) {
-    await supabaseClient
-        .from('puzzle_pieces')
-        .update({ is_found: true, found_at: new Date().toISOString() })
-        .eq('id', id)
-        .eq('project_id', project);
-}
-
-function unlockPiece(id, isFirst, pieceData) {
-    if (isFirst) document.querySelector('h2').innerText = "Congrats! You found it!";
-    const pieceElement = document.getElementById(`piece-${id}`);
+    const pieceElement = document.getElementById(`piece-${num}`);
     if (pieceElement) pieceElement.classList.add('unlocked');
+}
+
+function revealAll() {
+    document.querySelectorAll('.piece').forEach(p => p.classList.add('unlocked'));
+    document.querySelector('h2').innerText = "The hunt has concluded. Art revealed.";
 }
 
 init();
