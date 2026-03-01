@@ -527,11 +527,11 @@ async function checkRevealStatus() {
 }
 
 async function fetchAllPieces() {
-    // Fixed: Using .eq() instead of .where()
     const { data: pieces, error } = await supabaseClient
         .from('puzzle_pieces')
         .select('*')
-        .eq('is_found', true);
+        .eq('is_found', true)
+        .eq('project_id', 'penny'); // <--- ADD THIS LINE
 
     if (pieces) {
         pieces.forEach(piece => {
@@ -539,7 +539,6 @@ async function fetchAllPieces() {
         });
     }
 }
-
 async function handleScannedPiece(id) {
     let { data: piece, error } = await supabaseClient
         .from('puzzle_pieces')
