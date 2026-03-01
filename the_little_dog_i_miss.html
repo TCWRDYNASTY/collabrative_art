@@ -526,19 +526,24 @@ async function checkRevealStatus() {
     }
 }
 
-async function fetchAllPieces() {
-    const { data: pieces, error } = await supabaseClient
+async function handleScannedPiece(id) {
+    let { data: piece, error } = await supabaseClient
         .from('puzzle_pieces')
         .select('*')
-        .eq('is_found', true)
-        .eq('project_id', 'penny'); // <--- ADD THIS LINE
+        .eq('id', id)
+        .eq('project_id', 'penny') // Filter by Penny here too!
+        .single();
 
-    if (pieces) {
-        pieces.forEach(piece => {
-            unlockPiece(piece.id, false, piece);
-        });
+    if (piece) {
+        if (!piece.is_found) {
+            unlockPiece(id, true, piece); 
+            updateSupabase(id, 'penny'); // Pass the name to the update function
+        } else {
+            unlockPiece(id, false, piece);
+        }
     }
 }
+    
 async function handleScannedPiece(id) {
     let { data: piece, error } = await supabaseClient
         .from('puzzle_pieces')
