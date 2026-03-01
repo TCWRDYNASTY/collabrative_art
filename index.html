@@ -3,37 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Little Dog I Miss</title>
+    <title></title>
     <style>
-        body { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            background-color: #ffffff; 
-            font-family: sans-serif;
-        }
-        .start-button {
-            padding: 20px 40px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            background-color: #000;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-        .start-button:hover {
-            background-color: #333;
-        }
+
+ * {
+    box-sizing: border-box;
+}
+
+body { 
+    display: flex; 
+    flex-direction: column;        /* STACK vertically */
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh;             /* better than height:100vh */
+    margin: 0; 
+    padding: 20px;                 /* spacing on phones */
+    background-image: url("background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: sans-serif;
+}
+
+/* Container spacing */
+.container {
+    width: 100%;
+    max-width: 400px;              /* keeps it nice on desktop */
+    margin-bottom: 20px;
+}
+
+/* Button Styling */
+.container a {
+    display: block;                /* makes full-width button */
+    width: 100%;
+    color: black;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    text-decoration: none;
+    padding: 18px 25px;
+    background: url("paper.png");
+    background-size: cover;
+    text-align: center;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+/* Hover */
+.container a:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Smaller screens adjustment */
+@media (max-width: 480px) {
+    .container a {
+        font-size: 1rem;
+        padding: 16px 20px;
+    }
+}
     </style>
 </head>
 <body>
 
-    <a href="the_little_dog_i_miss.html?piece=2" class="start-button">
-        View Piece #2
-    </a>
+<div class="container">
+    <a href="the_little_dog_i_miss.html?piece=1">Piece #1</a>
+</div>
+
+<div class="container">
+    <a href="the_little_dog_i_miss.html?piece=2">Piece #2</a>
+</div>
+
 
 </body>
-</html>o
+</html>
