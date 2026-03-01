@@ -528,52 +528,41 @@ async function checkRevealStatus() {
 }
 
 async function handleScannedPiece(id) {
+    // We fetch the piece only if it matches the ID AND the 'penny' project
     let { data: piece, error } = await supabaseClient
         .from('puzzle_pieces')
         .select('*')
         .eq('id', id)
-        .eq('project_id', 'penny') // Filter by Penny here too!
+        .eq('project_id', 'penny') 
         .single();
 
-    if (piece) {
-        if (!piece.is_found) {
-            unlockPiece(id, true, piece); 
-            updateSupabase(id, 'penny'); // Pass the name to the update function
-        } else {
-            unlockPiece(id, false, piece);
-        }
+    if (error) {
+        console.error("Piece not found for project 'penny':", error);
+        return;
     }
-}
-    
-async function handleScannedPiece(id) {
-    let { data: piece, error } = await supabaseClient
-        .from('puzzle_pieces')
-        .select('*')
-        .eq('id', id)
-        .single();
 
     if (piece) {
         if (!piece.is_found) {
-            // Found for the first time
+            // First time this Penny piece was found!
             unlockPiece(id, true, piece); 
-            updateSupabase(id);
+            updateSupabase(id, 'penny'); // Tell update function to use 'penny'
         } else {
-            // Already found by someone else
+            // Already found by another collaborator
             unlockPiece(id, false, piece);
         }
     }
 }
 
-async function updateSupabase(id) {
+async function updateSupabase(id, projectId) {
     const { error } = await supabaseClient
         .from('puzzle_pieces')
         .update({ 
             is_found: true, 
             found_at: new Date().toISOString() 
         })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('project_id', projectId); // Ensures we only update Penny's piece #X
 
-    // Note: ntfy notification is now handled by your Supabase Edge Function Webhook!
     if (error) console.error("Update failed:", error);
 }
 
