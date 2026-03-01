@@ -491,99 +491,80 @@ h3 {
     </script>
 
 <script>
-// 1. Setup & Configuration
-const REVEAL_DATE = new Date(2026, 11, 31, 23, 59); // Dec 31, 2026
+// --- CONFIGURATION ---
+const REVEAL_DATE = new Date(2026, 11, 31, 23, 59);
 const supabaseUrl = 'https://yiindtbdnfqgwktaiaaq.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpaW5kdGJkbmZxZ3drdGFpYWFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjMyNTksImV4cCI6MjA4NzU5OTI1OX0.3TYbAKOfH3KLmb9N-axqUnnb8c-WAlKmRdmEd5KgNgI';
-
-// Use a unique name for the client to avoid errors
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// Check URL for piece ID (e.g., mysite.com/?piece=2)
-const urlParams = new URLSearchParams(window.location.search);
-const scannedPieceId = urlParams.get('piece');
+// --- INITIALIZATION ---
+document.getElementById('viewartBtn').addEventListener('click', () => {
+    document.getElementById('introOverlay').classList.add('hidden');
+});
 
-// 2. Core Logic Functions
 async function init() {
-    // Check if the deadline has passed first
-    await checkRevealStatus();
+    const urlParams = new URLSearchParams(window.location.search);
+    const pieceId = urlParams.get('piece');
+    const project = urlParams.get('project') || 'penny'; // Default to penny if missing
 
-    // If a QR code was scanned, process it
-    if (scannedPieceId) {
-        handleScannedPiece(scannedPieceId);
+    await checkRevealStatus(project);
+
+    if (pieceId) {
+        handleScannedPiece(pieceId, project);
     }
 }
 
-async function checkRevealStatus() {
-    const now = new Date();
-    
-    if (now > REVEAL_DATE) {
-        // Unlock everything if past deadline
+// --- CORE LOGIC ---
+async function checkRevealStatus(project) {
+    if (new Date() > REVEAL_DATE) {
         document.querySelectorAll('.piece').forEach(p => p.classList.add('unlocked'));
-        document.querySelector('h2').innerText = "The hunt has concluded. The full artwork is now revealed.";
+        document.querySelector('h2').innerText = "The hunt has concluded. Art revealed.";
     } else {
-        // Otherwise, fetch what has been found so far
-        fetchAllPieces(); 
+        const { data: pieces } = await supabaseClient
+            .from('puzzle_pieces')
+            .select('*')
+            .eq('is_found', true)
+            .eq('project_id', project);
+
+        if (pieces) {
+            pieces.forEach(p => unlockPiece(p.id, false, p));
+        }
     }
 }
 
-async function handleScannedPiece(id) {
-    // We fetch the piece only if it matches the ID AND the 'penny' project
-    let { data: piece, error } = await supabaseClient
+async function handleScannedPiece(id, project) {
+    let { data: piece } = await supabaseClient
         .from('puzzle_pieces')
         .select('*')
         .eq('id', id)
-        .eq('project_id', 'penny') 
+        .eq('project_id', project)
         .single();
-
-    if (error) {
-        console.error("Piece not found for project 'penny':", error);
-        return;
-    }
 
     if (piece) {
         if (!piece.is_found) {
-            // First time this Penny piece was found!
             unlockPiece(id, true, piece); 
-            updateSupabase(id, 'penny'); // Tell update function to use 'penny'
+            updateSupabase(id, project);
         } else {
-            // Already found by another collaborator
             unlockPiece(id, false, piece);
         }
     }
 }
 
-async function updateSupabase(id, projectId) {
-    const { error } = await supabaseClient
+async function updateSupabase(id, project) {
+    await supabaseClient
         .from('puzzle_pieces')
-        .update({ 
-            is_found: true, 
-            found_at: new Date().toISOString() 
-        })
+        .update({ is_found: true, found_at: new Date().toISOString() })
         .eq('id', id)
-        .eq('project_id', projectId); // Ensures we only update Penny's piece #X
-
-    if (error) console.error("Update failed:", error);
+        .eq('project_id', project);
 }
 
 function unlockPiece(id, isFirst, pieceData) {
-    // Update the UI
-    const statusMsg = isFirst ? "Congrats! You found it first!" : "This piece was already discovered.";
-    document.querySelector('h2').innerText = statusMsg;
-    
-    if (pieceData.clue_coords) {
-        document.querySelector('h3').innerText = `Next Clue: ${pieceData.clue_coords}`;
-    }
-
-    // Logic to visually unlock the piece in your 3D/Canvas view
+    if (isFirst) document.querySelector('h2').innerText = "Congrats! You found it!";
     const pieceElement = document.getElementById(`piece-${id}`);
     if (pieceElement) pieceElement.classList.add('unlocked');
 }
 
-// Start the app
 init();
 </script>
-
-
 </body>
 </html>
