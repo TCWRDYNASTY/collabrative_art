@@ -485,6 +485,19 @@ h3 {
 .piece.unlocked.flipped .piece-inner {
     transform: rotateY(180deg);
 }
+
+            /* The default state (Locked) */
+.piece .piece-front img {
+    opacity: 0; 
+    filter: grayscale(100%);
+    transition: opacity 0.5s ease;
+}
+
+/* The state after scanning (Unlocked) */
+.piece.unlocked .piece-front img {
+    opacity: 1;
+    filter: none;
+}
             </style>
 
 
@@ -709,10 +722,19 @@ async function handleScannedPiece(num, project) {
 
 function unlockPiece(num, isFirst) {
     if (isFirst) {
+        // Updated to use your project name
         document.querySelector('h2').innerText = "CalleDō: Piece Discovered!";
     }
+    
     const pieceElement = document.getElementById(`piece-${num}`);
-    if (pieceElement) pieceElement.classList.add('unlocked');
+    
+    if (pieceElement) {
+        pieceElement.classList.add('unlocked');
+        console.log(`Successfully unlocked piece-${num}`);
+    } else {
+        // This will tell us if the HTML ID doesn't match the Firebase ID
+        console.error(`ERROR: Element 'piece-${num}' not found in HTML.`);
+    }
 }
 
 function revealAll() {
