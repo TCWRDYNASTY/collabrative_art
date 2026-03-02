@@ -731,21 +731,13 @@ async function unlockPiece(num, isFirst) {
         document.querySelector('h2').innerText = "CalleDō: Piece Discovered!";
         
         // --- SEND TO NTFY APP ---
-        try {
-            // Updated topic to match your subscription
-            await fetch('https://ntfy.sh/the_little_dog_I-Miss', {
-                method: 'POST',
-                body: `Piece #${num} was just found!`, 
-                headers: {
-                    'Title': 'CalleDō Discovery',
-                    'Priority': 'high',
-                    'Tags': 'tada,dog2'
-                }
-            });
-            console.log("ntfy notification sent!");
-        } catch (err) {
-            console.error("ntfy error:", err);
-        }
+        // Using plain text body to ensure the browser doesn't block the 'POST'
+        fetch('https://ntfy.sh/the_little_dog_I-Miss', {
+            method: 'POST',
+            body: `CalleDō Discovery: Piece #${num} was just found!`
+        })
+        .then(() => console.log("ntfy notification sent!"))
+        .catch(err => console.error("ntfy error:", err));
     }
     
     const pieceElement = document.getElementById(`piece-${num}`);
