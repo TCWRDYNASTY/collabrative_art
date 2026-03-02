@@ -500,12 +500,12 @@ h3 {
         <button id="viewartBtn">View the Art</button>
     </div>
     
-    <a href="streetpuzzle.org" id="homeLink">
+    <a href="index.html" id="homeLink">
         <button id="homeBtn">Home</button>
     </a>
 <div class="frame-wrapper">
   <div class="puzzle-grid" id="main-puzzle">
-    <div id="piece-1" class="piece" onclick="this.classList.toggle('flipped')">
+<div id="piece-1" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
         <div class="piece-inner">
             <div class="piece-front">
                 <img src="section1.png">
@@ -517,7 +517,7 @@ h3 {
         </div>
     </div>
 
-    <div id="piece-2" class="piece" onclick="this.classList.toggle('flipped')">
+<div id="piece-2" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
         <div class="piece-inner">
             <div class="piece-front">
                 <img src="section2.png">
@@ -529,10 +529,10 @@ h3 {
         </div>
     </div>
 
-      <div id="piece-3" class="piece" onclick="this.classList.toggle('flipped')">
+<div id="piece-3" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
         <div class="piece-inner">
             <div class="piece-front">
-                <img src="section2.png">
+                <img src="section3.png">
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
@@ -540,10 +540,10 @@ h3 {
             </div>
         </div>
     </div>
-    <div id="piece-4" class="piece" onclick="this.classList.toggle('flipped')">
+<div id="piece-4" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
         <div class="piece-inner">
             <div class="piece-front">
-                <img src="section2.png">
+                <img src="section4.png">
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
@@ -551,10 +551,10 @@ h3 {
             </div>
         </div>
     </div>
-      <div id="piece-5" class="piece" onclick="this.classList.toggle('flipped')">
+<div id="piece-5" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
         <div class="piece-inner">
             <div class="piece-front">
-                <img src="section2.png">
+                <img src="section5.png">
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
@@ -562,10 +562,10 @@ h3 {
             </div>
         </div>
     </div>
-      <div id="piece-6" class="piece" onclick="this.classList.toggle('flipped')">
+<div id="piece-6" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
         <div class="piece-inner">
             <div class="piece-front">
-                <img src="section2.png">
+                <img src="section6.png">
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
@@ -574,10 +574,10 @@ h3 {
         </div>
     </div>
 
-      <div id="piece-7" class="piece" onclick="this.classList.toggle('flipped')">
+<div id="piece-7" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
         <div class="piece-inner">
             <div class="piece-front">
-                <img src="section2.png">
+                <img src="section7.png">
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
@@ -585,10 +585,10 @@ h3 {
             </div>
         </div>
     </div>
-      <div id="piece-8" class="piece" onclick="this.classList.toggle('flipped')">
+<div id="piece-8" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
         <div class="piece-inner">
             <div class="piece-front">
-                <img src="section2.png">
+                <img src="section8.png">
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
@@ -596,10 +596,10 @@ h3 {
             </div>
         </div>
     </div>
-      <div id="piece-9" class="piece" onclick="this.classList.toggle('flipped')">
+<div id="piece-9" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
         <div class="piece-inner">
             <div class="piece-front">
-                <img src="section2.png">
+                <img src="section9.png">
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
@@ -686,23 +686,27 @@ async function loadFoundPieces(project) {
 }
 
 async function handleScannedPiece(num, project) {
-    const docId = `${project}-${num}`; // Combines to "penny-1"
+    const docId = `${project}-${num}`; 
     const docRef = db.collection("puzzles").doc(docId);
 
     try {
         const doc = await docRef.get();
         if (doc.exists) {
             const data = doc.data();
-            if (!data.is_found) {
-                // UPDATE FIREBASE: Set to true and add server time
+            
+            // 1. If NOT found yet, update Firebase to TRUE and unlock
+            if (data.is_found === false) {
                 await docRef.update({
                     is_found: true,
                     found_at: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 unlockPiece(num, true);
-            } else {
+            } 
+            // 2. If already TRUE, just unlock it visually
+            else if (data.is_found === true) {
                 unlockPiece(num, false);
             }
+            // 3. If it's false and we didn't just scan it to change it, do nothing!
         }
     } catch (e) {
         console.error("Firebase Error:", e);
