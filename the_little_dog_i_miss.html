@@ -27,7 +27,7 @@ body {
     box-sizing: border-box;
 }
 
-/* --- 2. THE 3D FRAME --- */
+/* --- 2. THE FRAME (Restored to your original size) --- */
 .frame-wrapper {
     position: relative;
     width: 100%;
@@ -39,27 +39,24 @@ body {
     transition: transform 0.3s ease;
 }
 
-.frame-wrapper:hover {
-    transform: translate(-4px, -4px);
-    box-shadow: 20px 20px 40px rgba(0,0,0,0.4);
-}
-
-/* --- 3. THE PUZZLE GRID --- */
+/* --- 3. THE PUZZLE GRID (Fixed Proportions) --- */
 .puzzle-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     width: 100%; 
-    aspect-ratio: 1 / 1; /* Keeps it a perfect square for the 3x3 */
-    gap: 4px;
+    /* This restores your original image shape */
+    aspect-ratio: 3600 / 3000; 
+    gap: 2px;
     background-color: #111;
-    box-shadow: inset 0 10px 20px rgba(0,0,0,0.8);
+    overflow: hidden;
 }
 
-/* 3D Stage */
 .piece {
     perspective: 1000px; 
     cursor: pointer;
-    aspect-ratio: 1 / 1; /* Ensures each tile is square */
+    position: relative;
+    width: 100%;
+    height: 100%; /* Removes the fixed 150px that made it too big */
 }
 
 .piece-inner {
@@ -70,7 +67,6 @@ body {
     transform-style: preserve-3d;
 }
 
-/* The Flip */
 .piece.flipped .piece-inner {
     transform: rotateY(180deg);
 }
@@ -81,11 +77,9 @@ body {
     height: 100%;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    border-radius: 2px;
     overflow: hidden;
 }
 
-/* FRONT: Art Side */
 .piece-front {
     background-color: #222;
 }
@@ -95,26 +89,24 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
-    opacity: 0; /* Hidden until unlocked */
-    transition: opacity 0.8s ease;
+    opacity: 0; 
+    transition: opacity 1s ease;
 }
 
 .unlocked .piece-front img {
-    opacity: 1; /* Reveals art */
+    opacity: 1; 
 }
 
-/* BACK: Clue Side */
 .piece-back {
-    background-color: var(--slate-black);
+    background-color: #222;
     color: var(--gold);
     transform: rotateY(180deg);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 15px;
     text-align: center;
-    font-family: 'Courier New', monospace;
+    font-family: monospace;
     border: 2px solid var(--gold);
     box-sizing: border-box;
 }
@@ -124,21 +116,75 @@ body {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    font-size: 2rem;
-    opacity: 0.4;
-    transition: opacity 0.3s;
+    opacity: 0.3;
+    font-size: 1.5rem;
+    pointer-events: none;
 }
 
 .unlocked .label-id {
-    opacity: 0; /* Hide '?' once found */
+    display: none;
 }
 
-/* --- 4. MUSEUM PLAQUE & OVERLAY (Keep your existing styles below) --- */
-.container { /* ... your plaque code ... */ }
-h1, h2, h3 { /* ... your typography ... */ }
-#introOverlay { /* ... your overlay code ... */ }
-.hidden { display: none !important; }
-    </style>
+/* --- 4. THE MUSEUM PLAQUE (Description) --- */
+.container {
+    width: 90%;
+    max-width: 320px;
+    background-color: var(--slate-black); 
+    border-radius: 2px;
+    padding: 1.5rem;
+    margin-top: 20px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--gold);
+    border-top: 4px solid var(--gold);
+    box-sizing: border-box;
+}
+
+h1 { color: #fdfdfb; font-size: 1.5rem; font-family: 'Times New Roman', serif; margin: 0 0 5px 0; }
+h2 { color: var(--gold); font-size: 0.9rem; font-family: "Garamond", serif; font-style: italic; margin: 0; }
+h3 { color: #eae6da; font-size: 1.0rem; font-family: 'Times New Roman', serif; margin: 0; }
+
+/* --- 5. INTRO OVERLAY (Fixed Visibility) --- */
+#introOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10001;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+}
+
+#introOverlay p {
+    color: white;
+    font-family: sans-serif;
+    max-width: 500px;
+    line-height: 1.6;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+#viewartBtn {
+    padding: 15px 30px;
+    background-color: var(--slate-black);
+    color: white;
+    border: 1px solid var(--gold);
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.hidden {
+    display: none !important;
+}
+</style>
 
 </head>
     <body></body>
