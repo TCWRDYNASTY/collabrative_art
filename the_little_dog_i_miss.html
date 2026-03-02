@@ -472,9 +472,9 @@ h3 {
 
 /* Ensures the clue text is visible and gold when flipped */
 .piece-back {
-    background-color: #1a1a1a !important; 
-    color: var(--gold) !important;
-    border: 1px solid var(--gold);
+    background-color: #fdfdfd !important; 
+    color: #222222;
+    border: 2px solid #eeeeee;;
     font-size: 0.85rem;
     line-height: 1.4;
     padding: 10px;
@@ -694,19 +694,13 @@ async function handleScannedPiece(num, project) {
         if (doc.exists) {
             const data = doc.data();
             
-            // 1. If NOT found yet, update Firebase to TRUE and unlock
-            if (data.is_found === false) {
-                await docRef.update({
-                    is_found: true,
-                    found_at: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                unlockPiece(num, true);
-            } 
-            // 2. If already TRUE, just unlock it visually
-            else if (data.is_found === true) {
+            // STRICT CHECK: Only unlock if the DB value is actually true
+            if (data.is_found === true) {
                 unlockPiece(num, false);
+            } else {
+                // If it's false in DB, do NOT call unlockPiece.
+                console.log("Piece is still locked in the database.");
             }
-            // 3. If it's false and we didn't just scan it to change it, do nothing!
         }
     } catch (e) {
         console.error("Firebase Error:", e);
