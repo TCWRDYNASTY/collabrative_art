@@ -441,6 +441,29 @@ h3 {
     text-decoration: none;
     /* Removes underline */
 }
+            /* --- PIECE VISIBILITY LOGIC --- */
+
+/* 1. Hide the art by default */
+.piece-front img {
+    opacity: 0; 
+    transition: opacity 1.2s ease-in-out; /* Smooth reveal when found */
+}
+
+/* 2. Show the art only when the 'unlocked' class is present */
+.unlocked .piece-front img {
+    opacity: 1;
+}
+
+/* 3. Hide the '?' label once the piece is found */
+.unlocked .label-id {
+    display: none;
+}
+
+/* 4. Keep the back (clue side) dark until flipped */
+.piece-back {
+    background-color: #111;
+    /* This ensures people don't see clues through the 'wall' */
+}
             </style>
 
 
