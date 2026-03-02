@@ -103,80 +103,91 @@ body {
 }
 
 
-/* --- 3. THE PUZZLE GRID (Inside the Frame) --- */
+/* --- 3. THE PUZZLE GRID (3D Flip Version) --- */
 
 .puzzle-grid {
-
     display: grid;
-    /* Uses CSS Grid layout */
-
     grid-template-columns: repeat(3, 1fr);
-    /* Creates 3 equal columns */
-
     grid-template-rows: repeat(3, 1fr);
-    /* Creates 3 equal rows */
-
     width: 100%; 
-    /* Fills frame width */
-
-    aspect-ratio: 3600 / 3000;
-    /* Maintains consistent image proportion */
-
+    aspect-ratio: 3600 / 3000; 
     gap: 2px;
-    /* Space between puzzle pieces */
-
     background-color: #111;
-    /* Dark background between pieces */
-
     box-shadow: inset 0 10px 20px rgba(0,0,0,0.8);
-    /* Inner shadow for depth */
-
     overflow: hidden;
-    /* Prevents content from spilling outside grid */
 }
 
+/* 1. The Stage: Creates the 3D space */
 .piece {
-    background-color: #222;
-    /* Fallback dark background */
-
-    overflow: hidden;
-    /* Crops any image overflow */
-
+    perspective: 1000px; 
+    cursor: pointer;
     position: relative;
-    /* Allows label positioning inside */
+    background-color: transparent; /* Move the dark background to the sides */
 }
 
-.piece img {
-
+/* 2. The Sandwich: This rotates 180 degrees */
+.piece-inner {
+    position: relative;
     width: 100%;
-    /* Image fills piece horizontally */
-
     height: 100%;
-    /* Image fills piece vertically */
-
-    object-fit: cover;
-    /* Crops image nicely without distortion */
-
-    display: block;
-    /* Removes small inline spacing */
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
 }
 
-.label-id {
+/* 3. The Flip Trigger: Spins when the 'flipped' class is added via JS */
+.piece.flipped .piece-inner {
+    transform: rotateY(180deg);
+}
 
+/* 4. The Sides: Common styling for Front and Back */
+.piece-front, .piece-back {
     position: absolute;
-    /* Positions inside puzzle piece */
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden; /* Safari compatibility */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
 
-    top: 50%; left: 50%;
-    /* Moves to center point */
+/* 5. FRONT: The Art Side */
+.piece-front {
+    background-color: #222;
+}
 
-    transform: translate(-50%, -50%);
-    /* Perfect centering trick */
+.piece-front img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0; /* Stays hidden until 'unlocked' class is added */
+    transition: opacity 0.8s ease;
+}
 
-    color: white;
-    /* Text color */
+/* 6. BACK: The Clue Side */
+.piece-back {
+    background-color: var(--slate-black);
+    color: var(--gold);
+    transform: rotateY(180deg); /* Starts already turned around */
+    padding: 15px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    border: 1px solid var(--gold);
+    box-sizing: border-box;
+}
 
-    opacity: 0.3;
-    /* Makes label subtle/transparent */
+/* --- ADD THESE AT THE BOTTOM FOR LOGIC --- */
+
+/* Reveals the image once piece is found */
+.unlocked .piece-front img {
+    opacity: 1;
+}
+
+/* Hides the '?' label once the piece is found */
+.unlocked .label-id {
+    display: none;
 }
 
 
