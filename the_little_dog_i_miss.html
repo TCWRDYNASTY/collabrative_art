@@ -48,74 +48,60 @@ body {
 }
 
 /* --- 3. THE PUZZLE GRID --- */
-.puzzle-grid {
+    .puzzle-grid {
+
     display: grid;
+    /* Uses CSS Grid layout */
+
     grid-template-columns: repeat(3, 1fr);
+    /* Creates 3 equal columns */
+
     grid-template-rows: repeat(3, 1fr);
+    /* Creates 3 equal rows */
+
     width: 100%; 
-    aspect-ratio: 3600 / 3000; 
+    /* Fills frame width */
+
+    aspect-ratio: 3600 / 3000;
+    /* Maintains consistent image proportion */
+
     gap: 2px;
+    /* Space between puzzle pieces */
+
     background-color: #111;
+    /* Dark background between pieces */
+
     box-shadow: inset 0 10px 20px rgba(0,0,0,0.8);
+    /* Inner shadow for depth */
+
     overflow: hidden;
+    /* Prevents content from spilling outside grid */
 }
 
-/* 3D PIECE LOGIC */
 .piece {
-    perspective: 1000px; /* Required for 3D flip */
-    cursor: pointer;
-    position: relative;
-}
-
-.piece-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-style: preserve-3d;
-}
-
-/* Trigger flip */
-.piece.flipped .piece-inner {
-    transform: rotateY(180deg);
-}
-
-.piece-front, .piece-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    border-radius: 0; 
-}
-
-.piece-front img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    opacity: 0; 
-    transition: opacity 1s ease;
-}
-
-.unlocked .piece-front img {
-    opacity: 1;
-}
-
-/* The Clue Side */
-.piece-back {
     background-color: #222;
-    color: var(--gold);
-    transform: rotateY(180deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    text-align: center;
-    font-family: monospace;
-    font-size: 0.8rem;
-    border: 1px solid var(--gold);
-    box-sizing: border-box;
+    /* Fallback dark background */
+
+    overflow: hidden;
+    /* Crops any image overflow */
+
+    position: relative;
+    /* Allows label positioning inside */
+}
+
+.piece img {
+
+    width: 100%;
+    /* Image fills piece horizontally */
+
+    height: 100%;
+    /* Image fills piece vertically */
+
+    object-fit: cover;
+    /* Crops image nicely without distortion */
+
+    display: block;
+    /* Removes small inline spacing */
 }
 
 .label-id {
