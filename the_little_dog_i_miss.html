@@ -448,7 +448,15 @@ h3 {
     opacity: 0; 
     transition: opacity 1.2s ease-in-out; /* Smooth reveal when found */
 }
-
+/* Ensure the '?' is centered on the front face */
+.piece-front .label-id {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2; /* Sits above the hidden image */
+    pointer-events: none;
+}
 /* 2. Show the art only when the 'unlocked' class is present */
 .unlocked .piece-front img {
     opacity: 1;
@@ -460,9 +468,22 @@ h3 {
 }
 
 /* 4. Keep the back (clue side) dark until flipped */
+/* --- FINAL REFINEMENTS --- */
+
+/* Ensures the clue text is visible and gold when flipped */
 .piece-back {
-    background-color: #111;
-    /* This ensures people don't see clues through the 'wall' */
+    background-color: #1a1a1a !important; 
+    color: var(--gold) !important;
+    border: 1px solid var(--gold);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    padding: 10px;
+}
+
+/* This allows the 3D flip to happen only if it's been unlocked first */
+.piece.unlocked:active .piece-inner, 
+.piece.unlocked.flipped .piece-inner {
+    transform: rotateY(180deg);
 }
             </style>
 
