@@ -498,6 +498,55 @@ h3 {
     opacity: 1;
     filter: none;
 }
+
+.countdown-wrapper {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.05); /* Soft contrast */
+    border-radius: 12px;
+}
+
+.deadline-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.countdown {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.time-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+}
+
+.time-box span:first-child {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333; /* Darker for readability */
+}
+
+.time-box .label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    color: #888;
+    margin-top: 4px;
+}
+
+/* For small mobile screens */
+@media (max-width: 480px) {
+    .countdown { gap: 8px; }
+    .time-box span:first-child { font-size: 1.4rem; }
+}
+            
             </style>
 
 
@@ -623,11 +672,22 @@ h3 {
   </div>
     </div>
 
-    <div class="container">
-        <h1>The Little Dog I Miss</h1>
-        <h2 id="status-display">Digital Media</h2>
-        <h3><p>San Francisco Peninsula</p></h3>
+  <div class="container">
+    <h1>The Little Dog I Miss</h1>
+    <h2 id="status-display">Digital Media</h2>
+    <h3>San Francisco Peninsula</h3>
+
+    <div class="countdown-wrapper">
+        <p class="deadline-label">AUTOMATIC REVEAL IN:</p>
+        <div class="countdown" id="countdown">
+            <div class="time-box"><span id="days">00</span><span class="label">Days</span></div>
+            <div class="time-box"><span id="hours">00</span><span class="label">Hours</span></div>
+            <div class="time-box"><span id="minutes">00</span><span class="label">Minutes</span></div>
+            <div class="time-box"><span id="seconds">00</span><span class="label">Seconds</span></div>
+        </div>
     </div>
+</div>
+    
     <script>
         document.getElementById('viewartBtn').addEventListener('click', function() {
             document.getElementById('introOverlay').classList.add('hidden');
@@ -638,6 +698,42 @@ h3 {
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
 <script>
+
+function initCountdown() {
+    const daysEl = document.getElementById("days");
+    const hoursEl = document.getElementById("hours");
+    const minsEl = document.getElementById("minutes");
+    const secsEl = document.getElementById("seconds");
+
+    function update() {
+        const now = new Date().getTime();
+        const distance = REVEAL_DATE.getTime() - now;
+
+        if (distance < 0) {
+            document.querySelector(".countdown-wrapper").innerHTML = "<h3>ART REVEALED</h3>";
+            revealAll();
+            return;
+        }
+
+        const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // This is what actually pushes the numbers into your HTML boxes
+        if (daysEl) daysEl.innerText = String(d).padStart(2, '0');
+        if (hoursEl) hoursEl.innerText = String(h).padStart(2, '0');
+        if (minsEl) minsEl.innerText = String(m).padStart(2, '0');
+        if (secsEl) secsEl.innerText = String(s).padStart(2, '0');
+    }
+
+    setInterval(update, 1000);
+    update();
+}
+
+// Make sure to call it!
+initCountdown();
+    
 // --- CONFIGURATION ---
 const REVEAL_DATE = new Date(2026, 11, 31, 23, 59);
 
