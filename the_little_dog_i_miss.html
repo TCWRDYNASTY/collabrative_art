@@ -825,7 +825,7 @@ async function handleScannedPiece(num, project) {
 
 async function unlockPiece(num, isFirst) {
     if (isFirst) {
-        document.querySelector('h2').innerText = "CalleDō: Piece Discovered!";
+        document.querySelector('h2').innerText = "Piece Discovered!";
         
         // --- SEND TO NTFY APP ---
         // Using plain text body to ensure the browser doesn't block the 'POST'
