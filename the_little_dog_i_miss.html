@@ -586,7 +586,7 @@ h3 {
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
-                167 Edmonds Rd, Redwood City, CA 94062
+                541 Bryant St, Palo Alto, CA 94301
             </div>
         </div>
     </div>
@@ -609,7 +609,7 @@ h3 {
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
-               211 Valencia St, San Francisco, CA 94103
+               1302 El Camino Real, Menlo Park, CA 94025
             </div>
         </div>
     </div>
@@ -631,7 +631,7 @@ h3 {
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
-                RPG+9R Palo Alto, California
+                CRQC+Q39 Palo Alto, California
             </div>
         </div>
     </div>
@@ -654,7 +654,7 @@ h3 {
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
-                CRQ6+7X7 Menlo Park, California
+                CRQ7+C4W Menlo Park, California
             </div>
         </div>
     </div>
@@ -665,7 +665,7 @@ h3 {
                 <div class="label-id">?</div>
             </div>
             <div class="piece-back">
-                20990 Homestead Rd, Cupertino, CA 95014
+                
             </div>
         </div>
     </div>
@@ -688,11 +688,6 @@ h3 {
     </div>
 </div>
     
-    <script>
-        document.getElementById('viewartBtn').addEventListener('click', function() {
-            document.getElementById('introOverlay').classList.add('hidden');
-        });
-    </script>
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -771,9 +766,23 @@ async function init() {
         await loadFoundPieces(project);
     }
 
-    // 3. If this visit is from a new QR scan, handle the unlock
+    // 3. If this visit is from a QR scan, process it only once per browser session
     if (pieceNum) {
-        handleScannedPiece(pieceNum, project);
+
+        const scanKey = `scanned-${project}-${pieceNum}`;
+
+        // Only process the scan if this browser hasn't already done it
+        if (!sessionStorage.getItem(scanKey)) {
+
+            await handleScannedPiece(pieceNum, project);
+
+            // mark that we already processed this scan
+            sessionStorage.setItem(scanKey, "true");
+
+            // remove the ?piece= from the URL so refresh doesn't trigger again
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+        }
     }
 }
 
@@ -787,7 +796,7 @@ async function loadFoundPieces(project) {
         .get();
 
     snapshot.forEach(doc => {
-        const data = doc.data();
+        
         // Extract the number from the ID (e.g., "penny-1" -> "1")
         const idParts = doc.id.split('-');
         const num = idParts[idParts.length - 1];
@@ -796,30 +805,45 @@ async function loadFoundPieces(project) {
 }
 
 async function handleScannedPiece(num, project) {
-    const docId = `${project}-${num}`; 
+
+    const docId = `${project}-${num}`;
     const docRef = db.collection("puzzles").doc(docId);
 
     try {
+
         const doc = await docRef.get();
-        if (doc.exists) {
-            const data = doc.data();
-            
-            // 1. If NOT found yet (false), UPDATE the database to true!
-            if (data.is_found === false) {
-                await docRef.update({
-                    is_found: true,
-                    found_at: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                unlockPiece(num, true); // Reveals art + changes H2 text
-                console.log(`Piece ${num} newly discovered and updated!`);
-            } 
-            // 2. If already found (true), just show it.
-            else if (data.is_found === true) {
-                unlockPiece(num, false);
-            }
+
+        if (!doc.exists) {
+            console.error(`Puzzle document ${docId} does not exist.`);
+            return;
         }
+
+        const data = doc.data();
+
+        // If the piece has NOT been found yet
+        if (!data.is_found) {
+
+            await docRef.update({
+                is_found: true,
+                found_at: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            unlockPiece(num, true); // show discovery animation/message
+            console.log(`Piece ${num} newly discovered and updated!`);
+
+        } 
+        // If it was already found earlier
+        else {
+
+            unlockPiece(num, false);
+            console.log(`Piece ${num} was already discovered.`);
+
+        }
+
     } catch (e) {
+
         console.error("Firebase Error:", e);
+
     }
 }
 
