@@ -763,18 +763,17 @@ document.getElementById('viewartBtn')?.addEventListener('click', () => {
 
 async function init() {
     const urlParams = new URLSearchParams(window.location.search);
-    const pieceNum = urlParams.get('piece'); // e.g., "1"
-    const project = urlParams.get('project') || 'penny'; // e.g., "penny"
+    const pieceNum = urlParams.get('piece'); 
+    const project = urlParams.get('project') || 'penny';
 
-    // 1. Check if the whole project is already revealed by date
-    if (new Date() > REVEAL_DATE) {
+    // FIX: Compare numeric timestamps instead of objects
+    const now = new Date().getTime();
+    if (now >= REVEAL_DATE.getTime()) {
         revealAll();
     } else {
-        // 2. Load all currently found pieces for the 3x3 grid
         await loadFoundPieces(project);
     }
 
-    // 3. If this visit is from a new QR scan, handle the unlock
     if (pieceNum) {
         handleScannedPiece(pieceNum, project);
     }
