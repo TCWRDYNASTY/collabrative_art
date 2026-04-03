@@ -678,7 +678,7 @@ h3 {
     <h2 id="status-display">Digital Pastel</h2>
     <h3>Palo Alto</h3>
 
-    <div class="countdown-wrapper">
+ <div class="countdown-wrapper">
         <p class="deadline-label">REVEAL IN:</p>
         <div class="countdown" id="countdown">
             <div class="time-box"><span id="days">00</span><span class="label">Days</span></div>
@@ -699,9 +699,9 @@ h3 {
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
 <script>
-
 // --- CONFIGURATION ---
-const REVEAL_DATE = new Date(2026, 7, 31, 23, 59);
+// Year: 2026, Month: 7 (August is 7 in JS), Day: 31, Hour: 23, Minute: 59, Second: 59
+const REVEAL_DATE = new Date(2026, 7, 31, 23, 59, 59);
     
 function initCountdown() {
     const daysEl = document.getElementById("days");
@@ -713,9 +713,13 @@ function initCountdown() {
         const now = new Date().getTime();
         const distance = REVEAL_DATE.getTime() - now;
 
+        // If the countdown reaches zero
         if (distance < 0) {
             document.querySelector(".countdown-wrapper").innerHTML = "<h3>ART REVEALED</h3>";
-            revealAll();
+            // Check if revealAll exists before calling it to prevent console errors
+            if (typeof revealAll === "function") {
+                revealAll();
+            }
             return;
         }
 
@@ -724,7 +728,7 @@ function initCountdown() {
         const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // This is what actually pushes the numbers into your HTML boxes
+        // Update the HTML
         if (daysEl) daysEl.innerText = String(d).padStart(2, '0');
         if (hoursEl) hoursEl.innerText = String(h).padStart(2, '0');
         if (minsEl) minsEl.innerText = String(m).padStart(2, '0');
@@ -732,14 +736,12 @@ function initCountdown() {
     }
 
     setInterval(update, 1000);
-    update();
+    update(); // Run immediately so it doesn't show 00 for the first second
 }
 
-// Make sure to call it!
+// Start the timer
 initCountdown();
-    
 
-// PASTE YOUR FIREBASE CONFIG BOX HERE:
 const firebaseConfig = {
   apiKey: "AIzaSyBakPBYb0ngjOvHr89baflUet6S4d6E7Ec",
   authDomain: "called0collaborative-art.firebaseapp.com",
