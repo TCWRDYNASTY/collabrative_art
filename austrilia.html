@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <title>Smile Australia Its a Beautiful Day</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* --- 1. GLOBAL SETTINGS --- */
+:root {
+    --frame-thickness: clamp(20px, 5vw, 60px); 
+    --wall-color: #F2F1EC;
+    --gold: #d4af37;
+    --slate-black: #1a1a1a;
+}
+
+body {
+    background-color: var(--wall-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; 
+    padding: 30px 20px;
+    min-height: 100vh;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* --- 2. THE 3D FRAME --- */
+.frame-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+    background-color: #fff;
+    padding: 2px;
+    border: 6px solid white;
+    box-shadow: 12px 12px 25px rgba(0,0,0,0.3);
+    border-radius: 2px; 
+    transition: transform 0.3s ease;
+}
+
+.frame-wrapper:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 20px 20px 40px rgba(0,0,0,0.4);
+}
+
+
+.puzzle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 0; 
+    width: 100%;  
+    aspect-ratio: 1500 / 2000;  
+    background-color: #222;
+    box-shadow: inset 0 10px 20px rgba(0,0,0,0.8);
+    overflow: hidden;
+    align-content: stretch;
+    line-height: 0;
+}
+
+.piece {
+    perspective: 1000px; 
+    cursor: pointer;
+    position: relative;
+    background-color: transparent;
+}
+
+.piece-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+
+/* FRONT: Art Side */
+.piece-front {
+    background-color: #222;
+}
+
+.piece-front img {
+    width: 100%;
+    height: 100.1%; /* Slightly over 100% to cover sub-pixel gaps */
+    object-fit: cover;
+    display: block;
+    opacity: 0; 
+    transition: opacity 0.8s ease;
+}
+
+.label-id {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    opacity: 0.3;
+    z-index: 2;
+}
+
+/* Visibility Logic */
+.unlocked .piece-front img {
+    opacity: 1;
+}
+
+.unlocked .label-id {
+    display: none;
+}
+
+/* Allows flipping only when unlocked */
+.piece.unlocked:active .piece-inner, 
+.piece.unlocked.flipped .piece-inner {
+    transform: rotateY(180deg);
+}
+#homeBtn {
+
+    align-self: flex-end; 
+    /* Pushes button to right side */
+
+    margin: 10px 20px 30px 0;
+    /* Spacing around button */
+
+    padding: 12px 25px;
+    /* Button size */
+
+    background: white;
+    /* White background */
+
+    color: black;
+    /* Black text */
+
+    border: 3px solid black;    
+    /* Thick black border */
+
+    border-radius: 12px;
+    /* Rounded corners */
+
+    font-weight: bold;
+    /* Bold text */
+
+    cursor: pointer;
+    /* Pointer cursor */
+
+    font-size: 1rem;
+    /* Text size */
+
+    transition: transform 0.2s;
+    /* Smooth hover effect */
+}
+
+#homeLink {
+
+    align-self: flex-end;
+    /* Keeps alignment consistent */
+
+    text-decoration: none;
+    /* Removes underline */
+}
+/* --- 4. THE MUSEUM PLAQUE --- */
+.container {
+    width: 90%;
+    max-width: 500px;
+    background-color: var(--slate-black); 
+    border-radius: 2px;
+    padding: 1.5rem;
+    margin-top: 20px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--gold);
+    border-top: 4px solid var(--gold);
+    box-sizing: border-box;
+}
+
+h1 { color: var(--gold); font-size: 0.9rem; margin: 0 0 5px 0; font-family: 'Times New Roman', serif; }
+h2 { color: #fdfdfb; font-size: 1.5rem; margin: 0 0 5px 0; font-family: 'Times New Roman', serif; }
+h3 { color: var(--gold); font-size: 1rem; font-family: "Garamond", serif; font-style: italic; margin: 0; }
+h4  { color: #eae6da; font-size: 1.1rem; font-family: 'Times New Roman', serif; margin: 0; }  
+
+/* --- 5. COUNTDOWN TIMER --- */
+.countdown-wrapper {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.deadline-label {
+    font-family: sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.countdown {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.time-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 50px;
+}
+
+.time-box span:first-child {
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--gold);
+}
+
+.time-box .label {
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    color: #888;
+    margin-top: 4px;
+}
+
+/* --- 6. INTRO OVERLAY --- */
+#introOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10001;
+    display: flex;
+    color: white;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#viewartBtn {
+    padding: 15px 30px;
+    background-color: var(--slate-black);
+    color: white;
+    border: 1px solid var(--gold);
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+</style>
+
+</head>
+<body>
+
+    <a href="index.html" id="homeLink">
+        <button id="homeBtn">Home</button>
+    </a>
+
+    <div class="frame-wrapper">
+        <div class="puzzle-grid" id="main-puzzle">
+            
+            <div id="piece-1" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
+                <div class="piece-inner">
+                    <div class="piece-front">
+                        <img src="a1.png"> <div class="label-id">?</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="piece-2" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
+                <div class="piece-inner">
+                    <div class="piece-front">
+                        <img src="a2.png"> <div class="label-id">?</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="piece-3" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
+                <div class="piece-inner">
+                    <div class="piece-front">
+                        <img src="a3"> <div class="label-id">?</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="piece-4" class="piece" onclick="if(this.classList.contains('unlocked')) this.classList.toggle('flipped')">
+                <div class="piece-inner">
+                    <div class="piece-front">
+                        <img src="a4.png"> <div class="label-id">?</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>This artwork is a collaborative puzzle scattered across the city. Scan the unique QR code on each piece to reveal it. If all pieces aren't discovered by the deadline below, the full artwork will be automatically revealed.</h1>
+        <h2>Smile Australia Its a Beautiful Day </h2>
+        <h4>A smile can make someones day!</h4>
+        <h3>Pencil and Pastel<br/>Sydney Austrália</h3>
+
+        <div class="countdown-wrapper">
+            <p class="deadline-label">REVEAL IN:</p>
+            <div class="countdown" id="countdown">
+                <div class="time-box"><span id="days">00</span><span class="label">Days</span></div>
+                <div class="time-box"><span id="hours">00</span><span class="label">Hours</span></div>
+                <div class="time-box"><span id="minutes">00</span><span class="label">Minutes</span></div>
+                <div class="time-box"><span id="seconds">00</span><span class="label">Seconds</span></div>
+            </div>
+        </div>
+    </div>
+
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script>
+// --- 1. INTRO OVERLAY LOGIC ---
+document.getElementById('viewartBtn')?.addEventListener('click', function() {
+    document.getElementById('introOverlay').classList.add('hidden');
+});
+
+// --- 2. CONFIGURATION ---
+// July 4, 2026 at 7:00 PM (Month 6 = July)
+const REVEAL_DATE = new Date(2026, 8, 4, 19, 0); 
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBakPBYb0ngjOvHr89baflUet6S4d6E7Ec",
+    authDomain: "called0collaborative-art.firebaseapp.com",
+    projectId: "called0collaborative-art",
+    storageBucket: "called0collaborative-art.firebasestorage.app",
+    messagingSenderId: "63650107916",
+    appId: "1:63650107916:web:c0d369519d84d21d759429",
+    measurementId: "G-8GLRF54W15"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// --- 3. COUNTDOWN TIMER ---
+function initCountdown() {
+    const daysEl = document.getElementById("days");
+    const hoursEl = document.getElementById("hours");
+    const minsEl = document.getElementById("minutes");
+    const secsEl = document.getElementById("seconds");
+
+    function update() {
+        const now = new Date().getTime();
+        const distance = REVEAL_DATE.getTime() - now;
+
+        if (distance < 0) {
+            const wrapper = document.querySelector(".countdown-wrapper");
+            if (wrapper) wrapper.innerHTML = "<h3>ART REVEALED</h3>";
+            revealAll();
+            return;
+        }
+
+        const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if (daysEl) daysEl.innerText = String(d).padStart(2, '0');
+        if (hoursEl) hoursEl.innerText = String(h).padStart(2, '0');
+        if (minsEl) minsEl.innerText = String(m).padStart(2, '0');
+        if (secsEl) secsEl.innerText = String(s).padStart(2, '0');
+    }
+
+    setInterval(update, 1000);
+    update();
+}
+
+// --- 4. CORE LOGIC ---
+async function init() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pieceNum = urlParams.get('piece'); 
+    const project = urlParams.get('project') || 'Raíces'; 
+
+    initCountdown();
+
+    if (new Date() > REVEAL_DATE) {
+        revealAll();
+    } else {
+        await loadFoundPieces(project);
+    }
+
+    if (pieceNum) {
+        handleScannedPiece(pieceNum, project);
+    }
+}
+
+async function loadFoundPieces(project) {
+    const snapshot = await db.collection("puzzles")
+        .where("project_id", "==", project)
+        .where("is_found", "==", true)
+        .get();
+
+    snapshot.forEach(doc => {
+        const idParts = doc.id.split('-');
+        const num = idParts[idParts.length - 1];
+        unlockPiece(num, false);
+    });
+}
+
+async function handleScannedPiece(num, project) {
+    const docId = `${project}-${num}`; 
+    const docRef = db.collection("puzzles").doc(docId);
+
+    try {
+        const doc = await docRef.get();
+        if (doc.exists) {
+            const data = doc.data();
+            if (data.is_found === false) {
+                await docRef.update({
+                    is_found: true,
+                    found_at: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                unlockPiece(num, true);
+            } else {
+                unlockPiece(num, false);
+            }
+        }
+    } catch (e) {
+        console.error("Firebase Error:", e);
+    }
+}
+
+function unlockPiece(num, isFirst) {
+    if (isFirst) {
+        const statusHeader = document.querySelector('h2');
+        if (statusHeader) statusHeader.innerText = "Piece Discovered!";
+        
+        fetch('https://ntfy.sh/australia-smile-2006', {
+            method: 'POST',
+            body: `Raíces Discovery: Piece #${num} was just found!`
+        }).catch(err => console.error("ntfy error:", err));
+    }
+    
+    const pieceElement = document.getElementById(`piece-${num}`);
+    if (pieceElement) {
+        pieceElement.classList.add('unlocked');
+    }
+}
+
+function revealAll() {
+    document.querySelectorAll('.piece').forEach(p => p.classList.add('unlocked'));
+    const statusHeader = document.querySelector('h2');
+    if (statusHeader) statusHeader.innerText = "The hunt has concluded. Art revealed.";
+}
+
+init();
+</script>
+   </body> 
+</html>
