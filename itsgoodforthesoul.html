@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>NEW ARTWORK TITLE</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Smile! It's Good For the Soul.</title>
+
 
     <style>
 
@@ -13,37 +20,55 @@
            ============================================================ */
 
         :root {
-            --frame-thickness: clamp(20px, 5vw, 60px);
 
             --wall-color: #F2F1EC;
 
             --gold: #d4af37;
 
             --slate-black: #1a1a1a;
+
         }
 
 
         * {
+
             box-sizing: border-box;
+
         }
 
 
         body {
-            background-color: var(--wall-color);
 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
+            background-color:
+                var(--wall-color);
 
-            padding: 30px 20px;
+            display:
+                flex;
 
-            min-height: 100vh;
+            flex-direction:
+                column;
 
-            margin: 0;
+            align-items:
+                center;
 
-            font-family: Arial, sans-serif;
+            justify-content:
+                flex-start;
+
+            min-height:
+                100vh;
+
+            margin:
+                0;
+
+            padding:
+                30px 20px;
+
+            font-family:
+                Arial,
+                sans-serif;
+
         }
+
 
 
         /* ============================================================
@@ -51,38 +76,58 @@
            ============================================================ */
 
         #homeLink {
-            align-self: flex-end;
 
-            text-decoration: none;
+            align-self:
+                flex-end;
 
-            margin: 0 20px 20px 0;
+            text-decoration:
+                none;
+
+            margin:
+                0 20px 20px 0;
+
         }
 
 
         #homeBtn {
-            padding: 12px 25px;
 
-            background: white;
+            padding:
+                12px 25px;
 
-            color: black;
+            background:
+                white;
 
-            border: 3px solid black;
+            color:
+                black;
 
-            border-radius: 12px;
+            border:
+                3px solid black;
 
-            font-weight: bold;
+            border-radius:
+                12px;
 
-            cursor: pointer;
+            font-weight:
+                bold;
 
-            font-size: 1rem;
+            cursor:
+                pointer;
 
-            transition: transform 0.2s ease;
+            font-size:
+                1rem;
+
+            transition:
+                transform 0.2s ease;
+
         }
 
 
         #homeBtn:hover {
-            transform: scale(1.05);
+
+            transform:
+                scale(1.05);
+
         }
+
 
 
         /* ============================================================
@@ -90,209 +135,186 @@
            ============================================================ */
 
         .frame-wrapper {
-            position: relative;
 
-            width: 100%;
+            position:
+                relative;
 
-            /*
-             * The completed artwork is 3 pieces wide
-             * and 3 pieces tall.
-             *
-             * Each piece is 11 x 8.5 landscape.
-             *
-             * Overall ratio:
-             * 33 x 25.5
-             */
+            width:
+                100%;
 
-            max-width: 1100px;
+            max-width:
+                1400px;
 
-            box-sizing: border-box;
+            background:
+                white;
 
-            background-color: #fff;
+            padding:
+                10px;
 
-            padding: 4px;
-
-            border: 6px solid white;
+            border:
+                6px solid white;
 
             box-shadow:
                 12px 12px 25px rgba(0,0,0,0.3);
 
-            border-radius: 2px;
+            overflow:
+                hidden;
+
+        }
+
+
+
+        /* ============================================================
+           4. COMPLETE ARTWORK
+           ============================================================ */
+
+        .artwork-display {
+
+            position:
+                relative;
+
+            width:
+                100%;
+
+            background:
+                #222;
+
+            overflow:
+                hidden;
+
+        }
+
+
+        .artwork-display img {
+
+            display:
+                block;
+
+            width:
+                100%;
+
+            height:
+                auto;
+
+            max-width:
+                100%;
+
+            opacity:
+                0;
 
             transition:
-                transform 0.3s ease,
-                box-shadow 0.3s ease;
+                opacity 1.5s ease-in-out;
+
         }
 
-
-        .frame-wrapper:hover {
-            transform: translate(-4px, -4px);
-
-            box-shadow:
-                20px 20px 40px rgba(0,0,0,0.4);
-        }
 
 
         /* ============================================================
-           4. PUZZLE GRID
+           5. LOCKED ARTWORK
            ============================================================ */
 
-        .puzzle-grid {
+        .artwork-locked {
 
-            display: grid;
+            position:
+                absolute;
 
-            grid-template-columns:
-                repeat(3, 1fr);
+            inset:
+                0;
 
-            grid-template-rows:
-                repeat(3, 1fr);
+            display:
+                flex;
 
-            width: 100%;
+            align-items:
+                center;
 
-            /*
-             * 33 : 25.5
-             *
-             * This matches three 11 x 8.5
-             * landscape sheets.
-             */
+            justify-content:
+                center;
 
-            aspect-ratio: 33 / 25.5;
+            background:
+                #222;
 
-            gap: 3px;
-
-            background-color: #111;
-
-            box-shadow:
-                inset 0 10px 20px rgba(0,0,0,0.8);
-
-            overflow: hidden;
-        }
-
-
-        /* ============================================================
-           5. PUZZLE PIECE
-           ============================================================ */
-
-        .piece {
-            position: relative;
-
-            background-color: #222;
-
-            overflow: hidden;
-
-            cursor: default;
-        }
-
-
-        /* ============================================================
-           6. ARTWORK IMAGE
-           ============================================================ */
-
-        .piece img {
-
-            width: 100%;
-
-            height: 100%;
-
-            object-fit: cover;
-
-            display: block;
-
-            /*
-             * Artwork starts hidden.
-             */
-
-            opacity: 0;
-
-            filter: grayscale(100%);
-
-            transition:
-                opacity 1.5s ease-in-out,
-                filter 1.5s ease-in-out;
-        }
-
-
-        /* ============================================================
-           7. LOCKED QUESTION MARK
-           ============================================================ */
-
-        .label-id {
-
-            position: absolute;
-
-            top: 50%;
-
-            left: 50%;
-
-            transform:
-                translate(-50%, -50%);
-
-            z-index: 2;
-
-            color: white;
+            color:
+                white;
 
             font-family:
                 "Times New Roman",
                 serif;
 
-            font-size: clamp(2rem, 7vw, 5rem);
+            font-size:
+                clamp(6rem, 15vw, 12rem);
 
-            font-weight: bold;
+            font-weight:
+                bold;
 
             text-shadow:
-                0 3px 10px rgba(0,0,0,0.8);
-
-            pointer-events: none;
+                0 4px 15px rgba(0,0,0,0.8);
 
             transition:
                 opacity 0.8s ease;
+
         }
 
 
+
         /* ============================================================
-           8. REVEALED PIECES
+           6. REVEALED ARTWORK
            ============================================================ */
 
-        .revealed img {
+        .artwork-display.revealed img {
 
-            opacity: 1;
+            opacity:
+                1;
 
-            filter: none;
         }
 
 
-        .revealed .label-id {
+        .artwork-display.revealed .artwork-locked {
 
-            opacity: 0;
+            opacity:
+                0;
+
+            pointer-events:
+                none;
+
         }
+
 
 
         /* ============================================================
-           9. INFORMATION PLAQUE
+           7. INFORMATION PLAQUE
            ============================================================ */
 
         .container {
 
-            width: 90%;
+            width:
+                90%;
 
-            max-width: 650px;
+            max-width:
+                850px;
 
             background-color:
                 var(--slate-black);
 
-            border-radius: 2px;
+            border-radius:
+                2px;
 
-            padding: 1.5rem;
+            padding:
+                2rem;
 
-            margin-top: 25px;
+            margin-top:
+                25px;
 
-            display: flex;
+            display:
+                flex;
 
-            flex-direction: column;
+            flex-direction:
+                column;
 
-            align-items: center;
+            align-items:
+                center;
 
-            text-align: center;
+            text-align:
+                center;
 
             box-shadow:
                 0 10px 25px rgba(0,0,0,0.4);
@@ -302,76 +324,139 @@
 
             border-top:
                 4px solid var(--gold);
+
         }
+
 
 
         /* ============================================================
-           10. PLAQUE TYPOGRAPHY
+           8. TITLE
            ============================================================ */
-
-        h1 {
-
-            color: var(--gold);
-
-            font-size: 0.9rem;
-
-            line-height: 1.5;
-
-            margin:
-                0 0 8px 0;
-
-            font-family:
-                "Times New Roman",
-                serif;
-        }
-
 
         h2 {
 
-            color: #fdfdfb;
+            color:
+                #fdfdfb;
 
-            font-size: 1.8rem;
+            font-size:
+                2rem;
+
+            line-height:
+                1.2;
 
             margin:
-                0 0 8px 0;
+                0 0 25px 0;
 
             font-family:
                 "Times New Roman",
                 serif;
+
         }
 
+
+
+        /* ============================================================
+           9. DESCRIPTION
+           ============================================================ */
+
+        .description {
+
+            width:
+                100%;
+
+            max-width:
+                780px;
+
+            color:
+                #eeeeee;
+
+            font-family:
+                "Times New Roman",
+                serif;
+
+            font-size:
+                1.15rem;
+
+            line-height:
+                1.65;
+
+            text-align:
+                center;
+
+        }
+
+
+        .description p {
+
+            margin:
+                0 0 20px 0;
+
+        }
+
+
+        .description .quote {
+
+            color:
+                var(--gold);
+
+            font-style:
+                italic;
+
+            font-size:
+                1.25rem;
+
+        }
+
+
+        .description .emphasis {
+
+            color:
+                var(--gold);
+
+            font-size:
+                1.6rem;
+
+            font-weight:
+                bold;
+
+            letter-spacing:
+                2px;
+
+            margin:
+                25px 0;
+
+        }
+
+
+
+        /* ============================================================
+           10. MEDIUM / LOCATION
+           ============================================================ */
 
         h3 {
 
-            color: var(--gold);
+            color:
+                var(--gold);
 
-            font-size: 1rem;
+            font-size:
+                1.1rem;
+
+            line-height:
+                1.5;
 
             font-family:
                 Garamond,
-                serif;
-
-            font-style: italic;
-
-            margin: 0;
-        }
-
-
-        h4 {
-
-            color: #eae6da;
-
-            font-size: 1.1rem;
-
-            line-height: 1.4;
-
-            font-family:
                 "Times New Roman",
                 serif;
 
+            font-style:
+                italic;
+
             margin:
-                0 0 5px 0;
+                5px 0 0 0;
+
         }
+
 
 
         /* ============================================================
@@ -380,16 +465,21 @@
 
         .countdown-wrapper {
 
-            margin-top: 25px;
+            margin-top:
+                30px;
 
-            padding: 20px;
+            padding:
+                20px;
 
-            width: 100%;
+            width:
+                100%;
 
             background:
                 rgba(255,255,255,0.08);
 
-            border-radius: 12px;
+            border-radius:
+                12px;
+
         }
 
 
@@ -399,36 +489,52 @@
                 Arial,
                 sans-serif;
 
-            font-size: 0.7rem;
+            font-size:
+                0.7rem;
 
-            letter-spacing: 3px;
+            letter-spacing:
+                3px;
 
-            color: #ccc;
+            color:
+                #cccccc;
 
             margin:
-                0 0 10px 0;
+                0 0 12px 0;
+
         }
 
 
         .countdown {
 
-            display: flex;
+            display:
+                flex;
 
-            justify-content: center;
+            justify-content:
+                center;
 
-            gap: 20px;
+            align-items:
+                center;
+
+            gap:
+                25px;
+
         }
 
 
         .time-box {
 
-            display: flex;
+            display:
+                flex;
 
-            flex-direction: column;
+            flex-direction:
+                column;
 
-            align-items: center;
+            align-items:
+                center;
 
-            min-width: 65px;
+            min-width:
+                70px;
+
         }
 
 
@@ -438,25 +544,35 @@
                 "Courier New",
                 monospace;
 
-            font-size: 1.8rem;
+            font-size:
+                1.8rem;
 
-            font-weight: bold;
+            font-weight:
+                bold;
 
-            color: white;
+            color:
+                white;
+
         }
 
 
         .time-box .label {
 
-            font-size: 0.6rem;
+            font-size:
+                0.6rem;
 
-            text-transform: uppercase;
+            text-transform:
+                uppercase;
 
-            letter-spacing: 1px;
+            letter-spacing:
+                1px;
 
-            color: #aaa;
+            color:
+                #aaaaaa;
 
-            margin-top: 4px;
+            margin-top:
+                4px;
+
         }
 
 
@@ -466,18 +582,24 @@
 
         .reveal-message {
 
-            color: var(--gold);
+            color:
+                var(--gold);
 
             font-family:
                 "Times New Roman",
                 serif;
 
-            font-size: 1.2rem;
+            font-size:
+                1.3rem;
 
-            font-weight: bold;
+            font-weight:
+                bold;
 
-            letter-spacing: 1px;
+            letter-spacing:
+                1px;
+
         }
+
 
 
         /* ============================================================
@@ -487,13 +609,18 @@
         @media (max-width: 600px) {
 
             body {
+
                 padding:
                     15px 10px;
+
             }
 
 
             #homeLink {
-                margin-right: 5px;
+
+                margin:
+                    0 5px 15px 0;
+
             }
 
 
@@ -504,23 +631,21 @@
 
                 font-size:
                     0.9rem;
+
             }
 
 
             .frame-wrapper {
 
-                border-width:
-                    4px;
+                width:
+                    100%;
 
                 padding:
-                    2px;
-            }
+                    4px;
 
+                border:
+                    4px solid white;
 
-            .puzzle-grid {
-
-                gap:
-                    2px;
             }
 
 
@@ -530,14 +655,35 @@
                     96%;
 
                 padding:
-                    1.2rem;
+                    1.3rem;
+
             }
 
 
             h2 {
 
                 font-size:
-                    1.5rem;
+                    1.6rem;
+
+            }
+
+
+            .description {
+
+                font-size:
+                    1rem;
+
+                line-height:
+                    1.55;
+
+            }
+
+
+            .description .quote {
+
+                font-size:
+                    1.1rem;
+
             }
 
 
@@ -545,6 +691,7 @@
 
                 gap:
                     8px;
+
             }
 
 
@@ -552,13 +699,15 @@
 
                 min-width:
                     50px;
+
             }
 
 
             .time-box span:first-child {
 
                 font-size:
-                    1.35rem;
+                    1.3rem;
+
             }
 
 
@@ -566,11 +715,15 @@
 
                 font-size:
                     0.5rem;
+
             }
+
         }
 
     </style>
+
 </head>
+
 
 
 <body>
@@ -580,92 +733,129 @@
          HOME BUTTON
          ============================================================ -->
 
-    <a href="index.html" id="homeLink">
+    <a
+        href="index.html"
+        id="homeLink"
+    >
+
         <button id="homeBtn">
             Home
         </button>
+
     </a>
-<!-- ============================================================
-     ARTWORK
-     ============================================================ -->
 
-<div class="frame-wrapper">
 
-    <div class="artwork-display">
 
-        <img
-            src="Soulsmile.jpeg"
-            alt="Smile! It's Good For the Soul."
+    <!-- ============================================================
+         ARTWORK
+         ============================================================ -->
+
+    <div class="frame-wrapper">
+
+        <div
+            class="artwork-display"
+            id="artworkDisplay"
         >
 
-        <!-- Hidden until the reveal date -->
-        <div class="artwork-locked">
-            ?
+            <img
+                src="Soulsmile.jpeg"
+                alt="Smile! It's Good For the Soul."
+            >
+
+
+            <!-- Hidden until the reveal date -->
+
+            <div
+                class="artwork-locked"
+                id="artworkLocked"
+            >
+
+                ?
+
+            </div>
+
         </div>
 
     </div>
 
-</div>
 
-<!-- ============================================================
-     ARTWORK INFORMATION
-     ============================================================ -->
 
-<div class="container">
+    <!-- ============================================================
+         ARTWORK INFORMATION
+         ============================================================ -->
 
-    <h2>
-        Smile! It's Good For the Soul.
-    </h2>
+    <div class="container">
 
-    <div class="description">
 
-        <p class="quote">
-            “Don’t forget to smile. It’s good for the soul.”
-        </p>
+        <h2>
+            Smile! It's Good For the Soul.
+        </h2>
 
-        <p>
-            Those were words my mom would say to me at the end of our phone calls. Simple words, but ones that have stayed with me.
-        </p>
 
-        <p>
-            We are living through a time when so much can feel heavy — socially, emotionally, and economically. There is anger, division, uncertainty, and more than enough reasons to lose sight of the simple things that can bring us back to ourselves.
-        </p>
+        <div class="description">
 
-        <p>
-            This piece is a reminder of one of those things.
-        </p>
 
-        <p class="emphasis">
-            Smile.
-        </p>
+            <p class="quote">
+                “Don’t forget to smile. It’s good for the soul.”
+            </p>
 
-        <p>
-            Not because everything is perfect. Not because the difficult things don't matter. But because even in difficult moments, a smile can be a small act of hope, kindness, and resilience.
-        </p>
 
-        <p>
-            When life feels heavy, take a breath. Find something to smile about. And remember the words my mom always left me with:
-        </p>
+            <p>
+                Those were words my mom would say to me at the end of our phone calls. Simple words, but ones that have stayed with me.
+            </p>
 
-        <p class="quote">
-            “Don’t forget to smile. It’s good for the soul.”
-        </p>
 
-    </div>
+            <p>
+                We are living through a time when so much can feel heavy — socially, emotionally, and economically. There is anger, division, uncertainty, and more than enough reasons to lose sight of the simple things that can bring us back to ourselves.
+            </p>
 
-    <h3>
-        Pencil and Pastel
-        <br>
-        San Francisco California
-    </h3>
 
-</div>
+            <p>
+                This piece is a reminder of one of those things.
+            </p>
+
+
+            <p class="emphasis">
+                Smile.
+            </p>
+
+
+            <p>
+                Not because everything is perfect. Not because the difficult things don't matter. But because even in difficult moments, a smile can be a small act of hope, kindness, and resilience.
+            </p>
+
+
+            <p>
+                When life feels heavy, take a breath. Find something to smile about. And remember the words my mom always left me with:
+            </p>
+
+
+            <p class="quote">
+                “Don’t forget to smile. It’s good for the soul.”
+            </p>
+
+
+        </div>
+
+
+        <h3>
+
+            Pencil and Pastel
+
+            <br>
+
+            San Francisco California
+
+        </h3>
+
+
 
         <!-- ========================================================
              COUNTDOWN
              ======================================================== -->
 
         <div class="countdown-wrapper">
+
 
             <p class="deadline-label">
                 REVEAL IN:
@@ -676,6 +866,7 @@
                 class="countdown"
                 id="countdown"
             >
+
 
                 <div class="time-box">
 
@@ -728,6 +919,7 @@
 
                 </div>
 
+
             </div>
 
         </div>
@@ -745,11 +937,15 @@
 
 
         /* ============================================================
-           🔴🔴🔴 REVEAL DATE — CHANGE THIS DATE HERE 🔴🔴🔴
-           ============================================================
+           🔴🔴🔴 REVEAL DATE — CHANGE THIS HERE 🔴🔴🔴
 
-           This is the ONLY date you need to change when you want
-           to move the artwork reveal.
+           This is the ONLY place you need to edit
+           if you want to change the reveal date.
+
+           CURRENT REVEAL:
+
+           November 14, 2026
+           11:59:59 PM
 
            JavaScript months start at ZERO:
 
@@ -766,11 +962,6 @@
            November  = 10
            December  = 11
 
-           CURRENT REVEAL:
-
-           November 14, 2026
-           11:59:59 PM
-
         ============================================================ */
 
 
@@ -785,186 +976,202 @@
             );
 
 
+
         /* ============================================================
-           REVEAL ALL 9 PIECES
+           ARTWORK ELEMENTS
            ============================================================ */
 
-        function revealAll() {
+        const artworkDisplay =
+            document.getElementById(
+                "artworkDisplay"
+            );
 
-            const pieces =
-                document.querySelectorAll(".piece");
+
+        const countdownWrapper =
+            document.querySelector(
+                ".countdown-wrapper"
+            );
 
 
-            pieces.forEach(function(piece) {
 
-                piece.classList.add("revealed");
+        /* ============================================================
+           REVEAL THE COMPLETE ARTWORK
+           ============================================================ */
 
-            });
+        function revealArtwork() {
 
-            const countdownWrapper =
-                document.querySelector(
-                    ".countdown-wrapper"
-                );
+            artworkDisplay.classList.add(
+                "revealed"
+            );
 
 
             if (countdownWrapper) {
 
                 countdownWrapper.innerHTML =
+
                     `
                     <div class="reveal-message">
-                        ART REVEALED
+                        ARTWORK REVEALED
                     </div>
                     `;
 
             }
 
-            const title =
-                document.querySelector("h1");
-
-
-            if (title) {
-
-                title.innerText =
-                    "THE ARTWORK HAS BEEN REVEALED.";
-
-            }
-
         }
+
+
+
         /* ============================================================
            COUNTDOWN
            ============================================================ */
 
-        function initCountdown() {
+        function updateCountdown() {
 
 
-            const daysEl =
-                document.getElementById("days");
+            const now =
+                new Date().getTime();
 
 
-            const hoursEl =
-                document.getElementById("hours");
-
-
-            const minutesEl =
-                document.getElementById("minutes");
-
-
-            const secondsEl =
-                document.getElementById("seconds");
+            const distance =
+                REVEAL_DATE.getTime() -
+                now;
 
 
 
-            function updateCountdown() {
+            /* --------------------------------------------------------
+               THE REVEAL DATE HAS ARRIVED
+               -------------------------------------------------------- */
 
+            if (distance <= 0) {
 
-                const now =
-                    new Date().getTime();
+                revealArtwork();
 
+                clearInterval(
+                    countdownTimer
+                );
 
-                const distance =
-                    REVEAL_DATE.getTime() - now;
-                if (distance <= 0) {
-
-                    revealAll();
-
-                    clearInterval(countdownInterval);
-
-                    return;
-                }
-
-                const days =
-                    Math.floor(
-                        distance /
-                        (1000 * 60 * 60 * 24)
-                    );
-
-
-                const hours =
-                    Math.floor(
-                        (distance %
-                            (1000 * 60 * 60 * 24)) /
-                        (1000 * 60 * 60)
-                    );
-
-
-                const minutes =
-                    Math.floor(
-                        (distance %
-                            (1000 * 60 * 60)) /
-                        (1000 * 60)
-                    );
-
-
-                const seconds =
-                    Math.floor(
-                        (distance %
-                            (1000 * 60)) /
-                        1000
-                    );
-                if (daysEl) {
-
-                    daysEl.innerText =
-                        String(days)
-                        .padStart(2, "0");
-
-                }
-
-
-                if (hoursEl) {
-
-                    hoursEl.innerText =
-                        String(hours)
-                        .padStart(2, "0");
-
-                }
-
-
-                if (minutesEl) {
-
-                    minutesEl.innerText =
-                        String(minutes)
-                        .padStart(2, "0");
-
-                }
-
-
-                if (secondsEl) {
-
-                    secondsEl.innerText =
-                        String(seconds)
-                        .padStart(2, "0");
-
-                }
+                return;
 
             }
-            updateCountdown();
-            const countdownInterval =
-                setInterval(
-                    updateCountdown,
+
+
+
+            /* --------------------------------------------------------
+               CALCULATE TIME REMAINING
+               -------------------------------------------------------- */
+
+            const days =
+                Math.floor(
+                    distance /
+                    (1000 * 60 * 60 * 24)
+                );
+
+
+            const hours =
+                Math.floor(
+                    (
+                        distance %
+                        (1000 * 60 * 60 * 24)
+                    ) /
+                    (1000 * 60 * 60)
+                );
+
+
+            const minutes =
+                Math.floor(
+                    (
+                        distance %
+                        (1000 * 60 * 60)
+                    ) /
+                    (1000 * 60)
+                );
+
+
+            const seconds =
+                Math.floor(
+                    (
+                        distance %
+                        (1000 * 60)
+                    ) /
                     1000
                 );
 
+
+
+            /* --------------------------------------------------------
+               UPDATE THE DISPLAY
+               -------------------------------------------------------- */
+
+            document.getElementById(
+                "days"
+            ).innerText =
+                String(days).padStart(
+                    2,
+                    "0"
+                );
+
+
+            document.getElementById(
+                "hours"
+            ).innerText =
+                String(hours).padStart(
+                    2,
+                    "0"
+                );
+
+
+            document.getElementById(
+                "minutes"
+            ).innerText =
+                String(minutes).padStart(
+                    2,
+                    "0"
+                );
+
+
+            document.getElementById(
+                "seconds"
+            ).innerText =
+                String(seconds).padStart(
+                    2,
+                    "0"
+                );
+
         }
+
+
+
         /* ============================================================
-           START THE SITE
+           START COUNTDOWN
            ============================================================ */
 
-        function init() {
-            const now =
-                new Date().getTime();
-            if (
-                now >=
-                REVEAL_DATE.getTime()
-            ) {
+        updateCountdown();
 
-                revealAll();
 
-                return;
-            }
-            initCountdown();
+        const countdownTimer =
+            setInterval(
+                updateCountdown,
+                1000
+            );
+
+
+
+        /* ============================================================
+           INITIAL CHECK
+           ============================================================ */
+
+        if (
+            new Date().getTime() >=
+            REVEAL_DATE.getTime()
+        ) {
+
+            revealArtwork();
 
         }
-        init();
+
     </script>
+
+
 </body>
+
 </html>
