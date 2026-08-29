@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>The Music of My Youth</title>
+
+
+    <style>
+
+        /* ============================================================
+           1. GLOBAL SETTINGS
+           ============================================================ */
+
+        :root {
+
+            --wall-color: #F2F1EC;
+
+            --gold: #d4af37;
+
+            --slate-black: #1a1a1a;
+
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            background-color:
+                var(--wall-color);
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: flex-start;
+
+            min-height: 100vh;
+
+            margin: 0;
+
+            padding:
+                30px 20px;
+
+            font-family:
+                Arial,
+                sans-serif;
+        }
+
+
+
+        /* ============================================================
+           2. HOME BUTTON
+           ============================================================ */
+
+        #homeLink {
+
+            align-self:
+                flex-end;
+
+            text-decoration:
+                none;
+
+            margin:
+                0 20px 20px 0;
+        }
+
+
+        #homeBtn {
+
+            padding:
+                12px 25px;
+
+            background:
+                white;
+
+            color:
+                black;
+
+            border:
+                3px solid black;
+
+            border-radius:
+                12px;
+
+            font-weight:
+                bold;
+
+            cursor:
+                pointer;
+
+            font-size:
+                1rem;
+
+            transition:
+                transform 0.2s ease;
+        }
+
+
+        #homeBtn:hover {
+
+            transform:
+                scale(1.05);
+        }
+
+
+
+        /* ============================================================
+           3. ARTWORK FRAME
+           ============================================================ */
+
+        .frame-wrapper {
+
+            position:
+                relative;
+
+            width:
+                min(90vw, 900px);
+
+            max-width:
+                900px;
+
+            background:
+                white;
+
+            padding:
+                5px;
+
+            border:
+                6px solid white;
+
+            box-shadow:
+                12px 12px 25px rgba(0,0,0,0.3);
+
+            border-radius:
+                2px;
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .frame-wrapper:hover {
+
+            transform:
+                translate(-4px, -4px);
+
+            box-shadow:
+                20px 20px 40px rgba(0,0,0,0.4);
+        }
+
+
+
+        /* ============================================================
+           4. ALBUM DISPLAY
+           ============================================================ */
+
+        .album-display {
+
+            position:
+                relative;
+
+            width:
+                100%;
+
+            aspect-ratio:
+                1 / 1;
+
+            background:
+                #222;
+
+            overflow:
+                hidden;
+        }
+
+
+        #albumImage {
+
+            width:
+                100%;
+
+            height:
+                100%;
+
+            object-fit:
+                cover;
+
+            display:
+                block;
+
+            opacity:
+                0;
+
+            transition:
+                opacity 1.5s ease-in-out;
+        }
+
+
+
+        /* ============================================================
+           5. LOCKED ARTWORK
+           ============================================================ */
+
+        .locked-screen {
+
+            position:
+                absolute;
+
+            inset:
+                0;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            background:
+                #222;
+
+            color:
+                white;
+
+            font-family:
+                "Times New Roman",
+                serif;
+
+            font-size:
+                clamp(5rem, 15vw, 10rem);
+
+            font-weight:
+                bold;
+
+            text-shadow:
+                0 4px 15px rgba(0,0,0,0.8);
+
+            transition:
+                opacity 0.8s ease;
+        }
+
+
+
+        /* ============================================================
+           6. REVEALED STATE
+           ============================================================ */
+
+        .album-display.revealed #albumImage {
+
+            opacity:
+                1;
+        }
+
+
+        .album-display.revealed .locked-screen {
+
+            opacity:
+                0;
+
+            pointer-events:
+                none;
+        }
+
+
+
+        /* ============================================================
+           7. ALBUM NAVIGATION
+           ============================================================ */
+
+        .album-nav {
+
+            position:
+                absolute;
+
+            inset:
+                0;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            pointer-events:
+                none;
+        }
+
+
+        .nav-button {
+
+            pointer-events:
+                auto;
+
+            width:
+                55px;
+
+            height:
+                55px;
+
+            margin:
+                0 15px;
+
+            border:
+                2px solid white;
+
+            border-radius:
+                50%;
+
+            background:
+                rgba(0,0,0,0.55);
+
+            color:
+                white;
+
+            font-size:
+                2rem;
+
+            line-height:
+                1;
+
+            cursor:
+                pointer;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            opacity:
+                0;
+
+            transition:
+                opacity 0.2s ease,
+                transform 0.2s ease,
+                background 0.2s ease;
+        }
+
+
+        .album-display.revealed .nav-button {
+
+            opacity:
+                1;
+        }
+
+
+        .nav-button:hover {
+
+            background:
+                rgba(0,0,0,0.8);
+
+            transform:
+                scale(1.08);
+        }
+
+
+
+        /* ============================================================
+           8. ALBUM INFORMATION
+           ============================================================ */
+
+        .album-info {
+
+            text-align:
+                center;
+
+            margin-top:
+                18px;
+
+            min-height:
+                65px;
+        }
+
+
+        #albumCounter {
+
+            color:
+                #777;
+
+            font-size:
+                0.65rem;
+
+            letter-spacing:
+                3px;
+
+            text-transform:
+                uppercase;
+
+            margin-bottom:
+                6px;
+        }
+
+
+        #albumArtist {
+
+            color:
+                var(--gold);
+
+            font-family:
+                "Times New Roman",
+                serif;
+
+            font-size:
+                1rem;
+
+            font-style:
+                italic;
+
+            margin:
+                0 0 3px 0;
+        }
+
+
+        #albumTitle {
+
+            color:
+                #fdfdfb;
+
+            font-family:
+                "Times New Roman",
+                serif;
+
+            font-size:
+                1.3rem;
+
+            font-weight:
+                bold;
+
+            margin:
+                0;
+        }
+
+
+        /*
+         * The album information sits inside the dark plaque.
+         */
+
+        .album-info {
+
+            background:
+                var(--slate-black);
+
+            padding:
+                12px 10px;
+
+            border:
+                1px solid var(--gold);
+
+            border-top:
+                none;
+        }
+
+
+
+        /* ============================================================
+           9. ARTWORK INFORMATION PLAQUE
+           ============================================================ */
+
+        .container {
+
+            width:
+                90%;
+
+            max-width:
+                700px;
+
+            background:
+                var(--slate-black);
+
+            border-radius:
+                2px;
+
+            padding:
+                1.5rem;
+
+            margin-top:
+                25px;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            align-items:
+                center;
+
+            text-align:
+                center;
+
+            box-shadow:
+                0 10px 25px rgba(0,0,0,0.4);
+
+            border:
+                1px solid var(--gold);
+
+            border-top:
+                4px solid var(--gold);
+        }
+
+
+
+        /* ============================================================
+           10. TYPOGRAPHY
+           ============================================================ */
+
+        h1 {
+
+            color:
+                var(--gold);
+
+            font-size:
+                0.9rem;
+
+            line-height:
+                1.5;
+
+            margin:
+                0 0 8px 0;
+
+            font-family:
+                "Times New Roman",
+                serif;
+        }
+
+
+        h2 {
+
+            color:
+                #fdfdfb;
+
+            font-size:
+                1.8rem;
+
+            margin:
+                0 0 15px 0;
+
+            font-family:
+                "Times New Roman",
+                serif;
+        }
+
+
+        h3 {
+
+            color:
+                var(--gold);
+
+            font-size:
+                1rem;
+
+            font-family:
+                Garamond,
+                serif;
+
+            font-style:
+                italic;
+
+            margin:
+                20px 0 0 0;
+        }
+
+
+
+        /* ============================================================
+           11. DESCRIPTION
+           ============================================================ */
+
+        .description {
+
+            color:
+                #eae6da;
+
+            font-family:
+                "Times New Roman",
+                serif;
+
+            font-size:
+                1rem;
+
+            line-height:
+                1.6;
+
+            text-align:
+                center;
+
+            width:
+                100%;
+        }
+
+
+        .description p {
+
+            margin:
+                0 0 15px 0;
+        }
+
+
+        .description .quote {
+
+            color:
+                var(--gold);
+
+            font-style:
+                italic;
+
+            font-size:
+                1.05rem;
+        }
+
+
+        .description .emphasis {
+
+            color:
+                var(--gold);
+
+            font-size:
+                1.4rem;
+
+            font-weight:
+                bold;
+
+            letter-spacing:
+                2px;
+
+            margin:
+                20px 0;
+        }
+
+
+
+        /* ============================================================
+           12. COUNTDOWN
+           ============================================================ */
+
+        .countdown-wrapper {
+
+            margin-top:
+                25px;
+
+            padding:
+                20px;
+
+            width:
+                100%;
+
+            background:
+                rgba(255,255,255,0.08);
+
+            border-radius:
+                12px;
+        }
+
+
+        .deadline-label {
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size:
+                0.7rem;
+
+            letter-spacing:
+                3px;
+
+            color:
+                #ccc;
+
+            margin:
+                0 0 12px 0;
+        }
+
+
+        .countdown {
+
+            display:
+                flex;
+
+            justify-content:
+                center;
+
+            gap:
+                20px;
+        }
+
+
+        .time-box {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            align-items:
+                center;
+
+            min-width:
+                65px;
+        }
+
+
+        .time-box span:first-child {
+
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size:
+                1.8rem;
+
+            font-weight:
+                bold;
+
+            color:
+                white;
+        }
+
+
+        .time-box .label {
+
+            font-size:
+                0.6rem;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                1px;
+
+            color:
+                #aaa;
+
+            margin-top:
+                4px;
+        }
+
+
+        .reveal-message {
+
+            color:
+                var(--gold);
+
+            font-family:
+                "Times New Roman",
+                serif;
+
+            font-size:
+                1.2rem;
+
+            font-weight:
+                bold;
+
+            letter-spacing:
+                1px;
+        }
+
+
+
+        /* ============================================================
+           13. MOBILE
+           ============================================================ */
+
+        @media (max-width: 600px) {
+
+            body {
+
+                padding:
+                    15px 10px;
+            }
+
+
+            #homeLink {
+
+                margin-right:
+                    5px;
+            }
+
+
+            #homeBtn {
+
+                padding:
+                    10px 18px;
+
+                font-size:
+                    0.9rem;
+            }
+
+
+            .frame-wrapper {
+
+                width:
+                    96%;
+
+                border-width:
+                    4px;
+
+                padding:
+                    2px;
+            }
+
+
+            .nav-button {
+
+                width:
+                    45px;
+
+                height:
+                    45px;
+
+                margin:
+                    0 8px;
+
+                font-size:
+                    1.6rem;
+            }
+
+
+            .container {
+
+                width:
+                    96%;
+
+                padding:
+                    1.2rem;
+            }
+
+
+            h2 {
+
+                font-size:
+                    1.5rem;
+            }
+
+
+            .description {
+
+                font-size:
+                    0.95rem;
+
+                line-height:
+                    1.55;
+            }
+
+
+            .countdown {
+
+                gap:
+                    8px;
+            }
+
+
+            .time-box {
+
+                min-width:
+                    50px;
+            }
+
+
+            .time-box span:first-child {
+
+                font-size:
+                    1.35rem;
+            }
+
+
+            .time-box .label {
+
+                font-size:
+                    0.5rem;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+
+<body>
+
+
+    <!-- ============================================================
+         HOME BUTTON
+         ============================================================ -->
+
+    <a
+        href="index.html"
+        id="homeLink"
+    >
+
+        <button id="homeBtn">
+            Home
+        </button>
+
+    </a>
+
+
+
+    <!-- ============================================================
+         ALBUM ARTWORK
+         ============================================================ -->
+
+    <div class="frame-wrapper">
+
+        <div
+            class="album-display"
+            id="albumDisplay"
+        >
+
+
+            <!-- Album cover -->
+
+            <img
+                id="albumImage"
+                src=""
+                alt="Album Cover"
+            >
+
+
+            <!-- Hidden until reveal -->
+
+            <div class="locked-screen">
+
+                ?
+
+            </div>
+
+
+
+            <!-- Navigation arrows -->
+
+            <div class="album-nav">
+
+
+                <button
+                    class="nav-button"
+                    id="previousButton"
+                    aria-label="Previous album"
+                >
+
+                    &#8249;
+
+                </button>
+
+
+                <button
+                    class="nav-button"
+                    id="nextButton"
+                    aria-label="Next album"
+                >
+
+                    &#8250;
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ========================================================
+             ALBUM INFORMATION
+             ======================================================== -->
+
+        <div class="album-info">
+
+            <div id="albumCounter">
+                ALBUM 1 OF 9
+            </div>
+
+            <div id="albumArtist">
+                Artist Name
+            </div>
+
+            <div id="albumTitle">
+                Album Title
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ============================================================
+         ARTWORK INFORMATION
+         ============================================================ -->
+
+    <div class="container">
+
+
+        <h1>
+            NINE ALBUMS. NINE MEMORIES.
+            ONE SOUNDTRACK TO A YOUTH.
+        </h1>
+
+
+        <h2>
+            The Music of My Youth
+        </h2>
+
+
+        <div class="description">
+
+
+            <p>
+                This artwork is a collection of nine albums
+                that helped shape the soundtrack of my youth.
+            </p>
+
+
+            <p>
+                Each album carries its own memory, feeling,
+                and moment in time.
+            </p>
+
+
+            <p>
+                The stories behind each album will be added
+                as this piece comes together.
+            </p>
+
+
+        </div>
+
+
+        <h3>
+
+            Print and Acrylic
+
+            <br>
+
+            San Francisco
+
+        </h3>
+
+
+
+        <!-- ========================================================
+             COUNTDOWN
+             ======================================================== -->
+
+        <div class="countdown-wrapper">
+
+            <p class="deadline-label">
+                REVEAL IN:
+            </p>
+
+
+            <div
+                class="countdown"
+                id="countdown"
+            >
+
+
+                <div class="time-box">
+
+                    <span id="days">
+                        00
+                    </span>
+
+                    <span class="label">
+                        Days
+                    </span>
+
+                </div>
+
+
+                <div class="time-box">
+
+                    <span id="hours">
+                        00
+                    </span>
+
+                    <span class="label">
+                        Hours
+                    </span>
+
+                </div>
+
+
+                <div class="time-box">
+
+                    <span id="minutes">
+                        00
+                    </span>
+
+                    <span class="label">
+                        Minutes
+                    </span>
+
+                </div>
+
+
+                <div class="time-box">
+
+                    <span id="seconds">
+                        00
+                    </span>
+
+                    <span class="label">
+                        Seconds
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ============================================================
+         JAVASCRIPT
+         ============================================================ -->
+
+    <script>
+
+
+        /* ============================================================
+           🔴🔴🔴 REVEAL DATE — CHANGE THIS DATE HERE 🔴🔴🔴
+           ============================================================
+
+           THIS IS THE ONLY DATE YOU NEED TO CHANGE.
+
+           Current reveal:
+
+           November 14, 2026
+           11:59:59 PM
+
+           IMPORTANT:
+           JavaScript months start at ZERO.
+
+           January   = 0
+           February  = 1
+           March     = 2
+           April     = 3
+           May       = 4
+           June      = 5
+           July      = 6
+           August    = 7
+           September = 8
+           October   = 9
+           November  = 10
+           December  = 11
+
+        ============================================================ */
+
+
+        const REVEAL_DATE =
+            new Date(
+                2026,
+                10,
+                14,
+                23,
+                59,
+                59
+            );
+
+
+
+        /* ============================================================
+           🎵🎵🎵 ALBUM COVERS — EDIT YOUR ALBUMS HERE 🎵🎵🎵
+           ============================================================
+
+           Add your nine album covers below.
+
+           The image files should be in the same folder
+           as this HTML file.
+
+           Example:
+
+           album1.png
+           album2.png
+           album3.png
+
+           You can change the order at any time.
+
+        ============================================================ */
+
+
+        const albums = [
+
+            {
+                image:
+                    "album1.png",
+
+                artist:
+                    "Artist Name",
+
+                title:
+                    "Album Title"
+            },
+
+
+            {
+                image:
+                    "album2.png",
+
+                artist:
+                    "Artist Name",
+
+                title:
+                    "Album Title"
+            },
+
+
+            {
+                image:
+                    "album3.png",
+
+                artist:
+                    "Artist Name",
+
+                title:
+                    "Album Title"
+            },
+
+
+            {
+                image:
+                    "album4.png",
+
+                artist:
+                    "Artist Name",
+
+                title:
+                    "Album Title"
+            },
+
+
+            {
+                image:
+                    "album5.png",
+
+                artist:
+                    "Artist Name",
+
+                title:
+                    "Album Title"
+            },
+
+
+            {
+                image:
+                    "album6.png",
+
+                artist:
+                    "Artist Name",
+
+                title:
+                    "Album Title"
+            },
+
+
+            {
+                image:
+                    "album7.png",
+
+                artist:
+                    "Artist Name",
+
+                title:
+                    "Album Title"
+            },
+
+
+            {
+                image:
+                    "album8.png",
+
+                artist:
+                    "Artist Name",
+
+                title:
+                    "Album Title"
+            },
+
+
+            {
+                image:
+                    "album9.png",
+
+                artist:
+                    "Artist Name",
+
+                title:
+                    "Album Title"
+            }
+
+        ];
+
+
+
+        /* ============================================================
+           ALBUM NAVIGATION
+           ============================================================ */
+
+
+        let currentAlbum =
+            0;
+
+
+        const albumDisplay =
+            document.getElementById(
+                "albumDisplay"
+            );
+
+
+        const albumImage =
+            document.getElementById(
+                "albumImage"
+            );
+
+
+        const albumArtist =
+            document.getElementById(
+                "albumArtist"
+            );
+
+
+        const albumTitle =
+            document.getElementById(
+                "albumTitle"
+            );
+
+
+        const albumCounter =
+            document.getElementById(
+                "albumCounter"
+            );
+
+
+        const previousButton =
+            document.getElementById(
+                "previousButton"
+            );
+
+
+        const nextButton =
+            document.getElementById(
+                "nextButton"
+            );
+
+
+
+        /* ============================================================
+           DISPLAY AN ALBUM
+           ============================================================ */
+
+        function showAlbum(index) {
+
+            if (
+                index < 0 ||
+                index >= albums.length
+            ) {
+                return;
+            }
+
+
+            currentAlbum =
+                index;
+
+
+            const album =
+                albums[currentAlbum];
+
+
+            /*
+             * Fade image out before changing it.
+             */
+
+            albumImage.style.opacity =
+                "0";
+
+
+            setTimeout(function() {
+
+                albumImage.src =
+                    album.image;
+
+
+                albumImage.alt =
+                    album.artist +
+                    " - " +
+                    album.title;
+
+
+                albumArtist.innerText =
+                    album.artist;
+
+
+                albumTitle.innerText =
+                    album.title;
+
+
+                albumCounter.innerText =
+                    "ALBUM " +
+                    (currentAlbum + 1) +
+                    " OF " +
+                    albums.length;
+
+
+                /*
+                 * Fade image back in
+                 * if artwork has been revealed.
+                 */
+
+                if (
+                    albumDisplay.classList.contains(
+                        "revealed"
+                    )
+                ) {
+
+                    albumImage.style.opacity =
+                        "1";
+
+                }
+
+            }, 200);
+
+        }
+
+
+
+        /* ============================================================
+           NEXT ALBUM
+           ============================================================ */
+
+        function nextAlbum() {
+
+            currentAlbum++;
+
+            if (
+                currentAlbum >= albums.length
+            ) {
+
+                currentAlbum =
+                    0;
+
+            }
+
+
+            showAlbum(currentAlbum);
+
+        }
+
+
+
+        /* ============================================================
+           PREVIOUS ALBUM
+           ============================================================ */
+
+        function previousAlbum() {
+
+            currentAlbum--;
+
+            if (
+                currentAlbum < 0
+            ) {
+
+                currentAlbum =
+                    albums.length - 1;
+
+            }
+
+
+            showAlbum(currentAlbum);
+
+        }
+
+
+
+        /* ============================================================
+           BUTTON EVENTS
+           ============================================================ */
+
+        nextButton.addEventListener(
+            "click",
+            nextAlbum
+        );
+
+
+        previousButton.addEventListener(
+            "click",
+            previousAlbum
+        );
+
+
+
+        /* ============================================================
+           KEYBOARD NAVIGATION
+           ============================================================ */
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                /*
+                 * Only allow keyboard navigation
+                 * after the artwork has been revealed.
+                 */
+
+                if (
+                    !albumDisplay.classList.contains(
+                        "revealed"
+                    )
+                ) {
+                    return;
+                }
+
+
+                if (
+                    event.key === "ArrowRight"
+                ) {
+
+                    nextAlbum();
+
+                }
+
+
+                if (
+                    event.key === "ArrowLeft"
+                ) {
+
+                    previousAlbum();
+
+                }
+
+            }
+        );
+
+
+
+        /* ============================================================
+           MOBILE SWIPE NAVIGATION
+           ============================================================ */
+
+        let touchStartX =
+            0;
+
+
+        let touchEndX =
+            0;
+
+
+        albumDisplay.addEventListener(
+            "touchstart",
+            function(event) {
+
+                touchStartX =
+                    event.changedTouches[0].screenX;
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        albumDisplay.addEventListener(
+            "touchend",
+            function(event) {
+
+                if (
+                    !albumDisplay.classList.contains(
+                        "revealed"
+                    )
+                ) {
+                    return;
+                }
+
+
+                touchEndX =
+                    event.changedTouches[0].screenX;
+
+
+                handleSwipe();
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        function handleSwipe() {
+
+            const swipeDistance =
+                touchEndX -
+                touchStartX;
+
+
+            /*
+             * Minimum swipe distance.
+             */
+
+            if (
+                Math.abs(swipeDistance) <
+                50
+            ) {
+                return;
+            }
+
+
+            /*
+             * Swipe left = next album.
+             */
+
+            if (
+                swipeDistance < 0
+            ) {
+
+                nextAlbum();
+
+            }
+
+
+            /*
+             * Swipe right = previous album.
+             */
+
+            else {
+
+                previousAlbum();
+
+            }
+
+        }
+
+
+
+        /* ============================================================
+           REVEAL ALL
+           ============================================================ */
+
+        function revealArtwork() {
+
+
+            albumDisplay.classList.add(
+                "revealed"
+            );
+
+
+            /*
+             * Make sure the first album
+             * is displayed.
+             */
+
+            showAlbum(currentAlbum);
+
+
+            /*
+             * Change the countdown
+             * into the reveal message.
+             */
+
+            const countdownWrapper =
+                document.querySelector(
+                    ".countdown-wrapper"
+                );
+
+
+            if (countdownWrapper) {
+
+                countdownWrapper.innerHTML =
+
+                    `
+                    <div class="reveal-message">
+                        ART REVEALED
+                    </div>
+                    `;
+
+            }
+
+
+            /*
+             * Change the heading.
+             */
+
+            const heading =
+                document.querySelector(
+                    ".container h1"
+                );
+
+
+            if (heading) {
+
+                heading.innerText =
+                    "THE MUSIC HAS BEEN REVEALED.";
+
+            }
+
+        }
+
+
+
+        /* ============================================================
+           COUNTDOWN
+           ============================================================ */
+
+        function initCountdown() {
+
+
+            const daysEl =
+                document.getElementById(
+                    "days"
+                );
+
+
+            const hoursEl =
+                document.getElementById(
+                    "hours"
+                );
+
+
+            const minutesEl =
+                document.getElementById(
+                    "minutes"
+                );
+
+
+            const secondsEl =
+                document.getElementById(
+                    "seconds"
+                );
+
+
+
+            function updateCountdown() {
+
+
+                const now =
+                    new Date().getTime();
+
+
+                const distance =
+                    REVEAL_DATE.getTime() -
+                    now;
+
+
+
+                /*
+                 * Countdown finished.
+                 */
+
+                if (
+                    distance <= 0
+                ) {
+
+                    clearInterval(
+                        countdownInterval
+                    );
+
+
+                    revealArtwork();
+
+
+                    return;
+
+                }
+
+
+
+                /*
+                 * Calculate remaining time.
+                 */
+
+                const days =
+                    Math.floor(
+                        distance /
+                        (1000 * 60 * 60 * 24)
+                    );
+
+
+                const hours =
+                    Math.floor(
+                        (
+                            distance %
+                            (1000 * 60 * 60 * 24)
+                        ) /
+                        (1000 * 60 * 60)
+                    );
+
+
+                const minutes =
+                    Math.floor(
+                        (
+                            distance %
+                            (1000 * 60 * 60)
+                        ) /
+                        (1000 * 60)
+                    );
+
+
+                const seconds =
+                    Math.floor(
+                        (
+                            distance %
+                            (1000 * 60)
+                        ) /
+                        1000
+                    );
+
+
+
+                /*
+                 * Update display.
+                 */
+
+                daysEl.innerText =
+                    String(days)
+                    .padStart(2, "0");
+
+
+                hoursEl.innerText =
+                    String(hours)
+                    .padStart(2, "0");
+
+
+                minutesEl.innerText =
+                    String(minutes)
+                    .padStart(2, "0");
+
+
+                secondsEl.innerText =
+                    String(seconds)
+                    .padStart(2, "0");
+
+            }
+
+
+
+            /*
+             * Run immediately.
+             */
+
+            updateCountdown();
+
+
+
+            /*
+             * Update every second.
+             */
+
+            const countdownInterval =
+                setInterval(
+                    updateCountdown,
+                    1000
+                );
+
+        }
+
+
+
+        /* ============================================================
+           INITIALIZE SITE
+           ============================================================ */
+
+        function init() {
+
+
+            /*
+             * Load the first album's
+             * information.
+             */
+
+            showAlbum(0);
+
+
+
+            /*
+             * Check whether the
+             * reveal date has passed.
+             */
+
+            const now =
+                new Date().getTime();
+
+
+            if (
+                now >=
+                REVEAL_DATE.getTime()
+            ) {
+
+                revealArtwork();
+
+                return;
+
+            }
+
+
+
+            /*
+             * Otherwise start countdown.
+             */
+
+            initCountdown();
+
+        }
+
+
+
+        init();
+
+    </script>
+
+
+</body>
+
+</html>
